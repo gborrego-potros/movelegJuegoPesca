@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Resumen_Pesca.unity
     guid: 99ea0b32cc061334ca5e1227cec8ef57
+  - enabled: 1
+    path: Assets/Scenes/Opciones.unity
+    guid: fb7fe9af8fa55184fbb0e8e9ebc69ffa
   m_configObjects: {}
