@@ -1306,7 +1306,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: SELECCIONE LA TERAPIA A REALIZAR
+  m_Text: "Empezara la Terapia coloquese \nen el Dispositivo"
 --- !u!222 &1663302359
 CanvasRenderer:
   m_ObjectHideFlags: 0
