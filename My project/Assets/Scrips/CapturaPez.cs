@@ -4,7 +4,6 @@ using static System.Random;
 using System;
 using UnityEngine;
 
-
 public class CapturaPez : MonoBehaviour
 {
     [SerializeField] private GameObject ImagenPezNormal;
@@ -13,47 +12,82 @@ public class CapturaPez : MonoBehaviour
     [SerializeField] private GameObject ImagenBota;
     [SerializeField] private GameObject ImagenAlga;
     [SerializeField] private GameObject ImagenTesoro;
-    
-    //Falta que se quite el despliegue de la imagen tras unos segundos
+    [SerializeField] private GameObject PanelCaptura;
+
+    ResultadoPuntaje puntaje;
+
+    public int contadorPezNormal = 0;
+    public int contadorPezNormal2 = 0;
+    public int contadorPezRaro = 0;
+    public int contadorBota = 0;
+    public int contadorAlga = 0;
+    public int contadorTesoro = 0;
+
+    void Start()
+    {
+        //RNGCaptura();
+    }
+
     public void CapturarPez(int pesca)
     {
-        switch(pesca)
-        {
-            case 1:
-                Console.WriteLine("Pez normal");
+        if(pesca == 1 || pesca == 2){
+                PanelCaptura.SetActive(true);
                 ImagenPezNormal.SetActive(true);
-                break;
-            case 2:
-                Console.WriteLine("Pez normal 2");
+                contadorPezNormal ++;
+                StartCoroutine("Esperar");
+        }else if(pesca == 3 || pesca == 4){
+                PanelCaptura.SetActive(true);
                 ImagenPezNormal2.SetActive(true);
-                break;
-            case 3:
-                Console.WriteLine("Pez raro");
+                contadorPezNormal2 ++;
+                StartCoroutine("Esperar");
+        } else if(pesca == 5){
+                PanelCaptura.SetActive(true);
                 ImagenPezRaro.SetActive(true);
-                break;
-            case 4:
-                Console.WriteLine("Alga");
-                ImagenBota.SetActive(true);
-                break;
-            case 5:
-                Console.WriteLine("Bota");
+                contadorPezRaro ++;
+                StartCoroutine("Esperar");
+        }else if(pesca == 6 || pesca == 7){
+                PanelCaptura.SetActive(true);
                 ImagenAlga.SetActive(true);
-                break;
-            case 6:
-                Console.WriteLine("Cofre");
+                contadorAlga ++;
+                StartCoroutine("Esperar");
+        } else if(pesca == 8 || pesca == 9){
+                PanelCaptura.SetActive(true);
+                ImagenBota.SetActive(true);
+                contadorBota ++;
+                StartCoroutine("Esperar");
+        } else if(pesca == 10){
+                PanelCaptura.SetActive(true);
                 ImagenTesoro.SetActive(true);
-                break;
-            default:
-                Console.WriteLine("Numero fuera del rango");
-                break;
+                contadorTesoro ++;
+                StartCoroutine("Esperar");
         }
+        
+    }
+
+    public void QuitarPez()
+    {
+        ImagenPezNormal.SetActive(false);
+        ImagenPezNormal2.SetActive(false);
+        ImagenPezRaro.SetActive(false);
+        ImagenBota.SetActive(false);
+        ImagenAlga.SetActive(false);
+        ImagenTesoro.SetActive(false);
+        PanelCaptura.SetActive(false);
     }
 
     public void RNGCaptura()
     {
-            System.Random r = new System.Random();
-            int numero;
-            numero = r.Next(1,7);
-            CapturarPez(numero);
+        System.Random r = new System.Random(); 
+        int numero;
+        numero = r.Next(1, 11);
+        Debug.Log(numero);
+        CapturarPez(numero);
+    }
+
+    IEnumerator Esperar()
+    {
+        yield return new WaitForSeconds(3f);
+        QuitarPez();
+        StopAllCoroutines();
     }
 }

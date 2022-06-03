@@ -25,11 +25,12 @@ public class Sockets : MonoBehaviour
     // Anterior socket
     Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
     Socket conexion;
-    IPEndPoint connect = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1755);
+    IPEndPoint connect = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 2000);
 
     // Variables de uso para la terapia
     /*
-    int porc_disminucion_por_Paro = 5;
+        // Variable para la calibracion del dispositivo guia
+        int porc_disminucion_por_Paro = 5;
         public int NRT = 0, NRR = 0;
         int cont_R = 0, cont_T = 0;
 
@@ -96,11 +97,9 @@ public class Sockets : MonoBehaviour
         conexion = serverSocket.Accept();
         Console.WriteLine("Conexion aceptada");
 
-        byte[] recibir_info = new byte[100];
+        byte[] recibir_info = new byte[1024];
         string data = "";
         int array_size = 0;
-
-        
         
         while(true){
         array_size = conexion.Receive(recibir_info, 0, recibir_info.Length, 0);

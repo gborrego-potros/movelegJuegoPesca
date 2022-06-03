@@ -7,6 +7,9 @@ TagManager:
   - opciones
   - audio
   - capturado
+  - pesca
+  - puntaje
+  - resultado
   layers:
   - Default
   - TransparentFX
