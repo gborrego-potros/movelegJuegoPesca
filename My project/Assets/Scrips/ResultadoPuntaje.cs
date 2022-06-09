@@ -21,8 +21,6 @@ public class ResultadoPuntaje : MonoBehaviour
     [SerializeField] private GameObject canvasPausaPersonaje;
     [SerializeField] private GameObject fondo;
 
-    int a;
-
     public void puntajeDesplegar(int numPecesNormales, int numPecesNormales2, int numPecesRaros, int numBotas, int numAlgas, int numTesoros)
     {
         
@@ -32,13 +30,6 @@ public class ResultadoPuntaje : MonoBehaviour
         botas.text = numBotas.ToString();
         algas.text = numAlgas.ToString();
         tesoros.text = numTesoros.ToString();
-
-        Debug.Log("Normal: " + numPecesNormales);
-        Debug.Log("Normal2: " + numPecesNormales2);
-        Debug.Log("Raro: " + numPecesRaros);
-        Debug.Log("Bota: " + numBotas);
-        Debug.Log("Alga: " + numAlgas);
-        Debug.Log("Tesoro: " + numTesoros);
 
         resumenPesca.SetActive(true);
         canvasResultados.SetActive(true);
