@@ -8,6 +8,7 @@ public class PruebaPesca : MonoBehaviour
     public CapturaPez captura;
     public ResultadoPuntaje puntajes;
     public HiloCania hiloAnimaciones;
+    public PosicionarCebo ceboAnimacion;
 
     int numeroRepeticiones = 0;
 
@@ -24,6 +25,7 @@ public class PruebaPesca : MonoBehaviour
         while(numeroRepeticiones != repeticionesEsperadas)
         {
             hiloAnimaciones.animacionCorrutina(20);
+            ceboAnimacion.iniciarAnimacionCorrutina(20);
             yield return new WaitForSeconds(5f);
             captura.RNGCaptura();
             yield return new WaitForSeconds(5f);
