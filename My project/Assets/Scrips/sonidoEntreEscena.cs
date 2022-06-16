@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class sonidoEntreEscena : MonoBehaviour
-{
+{   
+    //Variable para el sonido entre
     private sonidoEntreEscena instance;
+    //Método para pasar el sonido entre esenas
     public sonidoEntreEscena Instance
     {
         get
@@ -12,7 +14,7 @@ public class sonidoEntreEscena : MonoBehaviour
             return instance;
         }
     }
-
+    
     private void Awake()
     {
         if (FindObjectsOfType(GetType()).Length > 1)

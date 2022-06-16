@@ -9,10 +9,12 @@ public class PruebaPesca : MonoBehaviour
     public ResultadoPuntaje puntajes;
     public HiloCania hiloAnimaciones;
     public PosicionarCebo ceboAnimacion;
-
+    
     int numeroRepeticiones = 0;
 
     int repeticionesEsperadas = 10;
+
+    int numeroRNG;
 
     // Start is called before the first frame update
     void Start()
@@ -20,14 +22,17 @@ public class PruebaPesca : MonoBehaviour
         StartCoroutine("iniciarPesca");
     }
 
+    //Corrutina que inicia todo el proceso de pesca.
     IEnumerator iniciarPesca()
     {
         while(numeroRepeticiones != repeticionesEsperadas)
         {
+            numeroRNG = captura.RNGCaptura();
             hiloAnimaciones.animacionCorrutina(20);
             ceboAnimacion.iniciarAnimacionCorrutina(20);
+            captura.iniciarAnimacion(numeroRNG, 20);
             yield return new WaitForSeconds(5f);
-            captura.RNGCaptura();
+            captura.DesplegarCaptura(numeroRNG);
             yield return new WaitForSeconds(5f);
             numeroRepeticiones ++;
         }
