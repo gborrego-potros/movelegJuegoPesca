@@ -306,7 +306,7 @@ public class Sockets : MonoBehaviour
                 Debug.Log(error.Message);
             }
         }
-
+        //Investigar IAsyncResult AR
         private void AcceptCallback(IAsyncResult AR)
         {
             Socket socket;

@@ -835,6 +835,7 @@ GameObject:
   - component: {fileID: 794270583}
   - component: {fileID: 794270582}
   - component: {fileID: 794270581}
+  - component: {fileID: 794270584}
   m_Layer: 5
   m_Name: Button (3)
   m_TagString: Untagged
@@ -956,6 +957,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 794270579}
   m_CullTransparentMesh: 1
+--- !u!114 &794270584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 794270579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1869043802}
+          m_TargetAssemblyTypeName: ControladorSonidosBotones, Assembly-CSharp
+          m_MethodName: BotonSonClick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1040869796
 GameObject:
   m_ObjectHideFlags: 0
@@ -1745,6 +1775,7 @@ GameObject:
   - component: {fileID: 1850153737}
   - component: {fileID: 1850153736}
   - component: {fileID: 1850153735}
+  - component: {fileID: 1850153738}
   m_Layer: 5
   m_Name: Button (2)
   m_TagString: Untagged
@@ -1866,6 +1897,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1850153733}
   m_CullTransparentMesh: 1
+--- !u!114 &1850153738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850153733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1869043802}
+          m_TargetAssemblyTypeName: ControladorSonidosBotones, Assembly-CSharp
+          m_MethodName: BotonSonClick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1852308947
 GameObject:
   m_ObjectHideFlags: 0
@@ -1945,6 +2005,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1852308947}
   m_CullTransparentMesh: 1
+--- !u!1 &1869043801
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1869043803}
+  - component: {fileID: 1869043802}
+  m_Layer: 0
+  m_Name: ControlSonidoBotones
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1869043802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869043801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 196b9ed42e4e86640af26b64a69d6891, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SonidoClick: {fileID: 5728328594792000558, guid: 306f9c19046dfc74991ca89b9a7aced1, type: 3}
+--- !u!4 &1869043803
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869043801}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 654.3316, y: 598.44684, z: -81.63406}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1873119730
 GameObject:
   m_ObjectHideFlags: 0
@@ -1993,6 +2097,7 @@ GameObject:
   - component: {fileID: 1967143144}
   - component: {fileID: 1967143143}
   - component: {fileID: 1967143142}
+  - component: {fileID: 1967143145}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -2115,6 +2220,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1967143140}
   m_CullTransparentMesh: 1
+--- !u!114 &1967143145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1967143140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1869043802}
+          m_TargetAssemblyTypeName: ControladorSonidosBotones, Assembly-CSharp
+          m_MethodName: BotonSonClick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &2065126761
 GameObject:
   m_ObjectHideFlags: 0

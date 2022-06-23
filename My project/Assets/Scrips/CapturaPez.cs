@@ -33,6 +33,9 @@ public class CapturaPez : MonoBehaviour
     [SerializeField] private GameObject SpriteAlga;
     [SerializeField] private GameObject SpriteTesoro;
 
+    //Sonido de captura
+    public GameObject SonidoCaptura;
+
     //Contadores de capturas
     public int contadorPezNormal = 0;
     public int contadorPezNormal2 = 0;
@@ -81,7 +84,7 @@ public class CapturaPez : MonoBehaviour
 
 
 
-    //Método que activa la corrutina la cual realiza la animacion de captura
+    //Metodo que activa la corrutina la cual realiza la animacion de captura
     public void iniciarAnimacion(int pescaRNG, int tiempo)
     {
         tiempoEspera = tiempo;
@@ -150,6 +153,7 @@ public class CapturaPez : MonoBehaviour
 
             }
         }
+
         for(int x = 0; x != tiempoEspera; x++)
         {
             if(pesca >= porcentajePezNormalMin && pesca <= porcentajePezNormalMax)
@@ -218,7 +222,7 @@ public class CapturaPez : MonoBehaviour
         SpriteTesoro.SetActive(false);
     }
 
-    //Método que despliega la captura
+    //Metodo que despliega la captura
     public void DesplegarCaptura(int pesca)
     {
         if(pesca >= porcentajePezNormalMin && pesca <= porcentajePezNormalMax)
@@ -227,6 +231,8 @@ public class CapturaPez : MonoBehaviour
                 PanelCaptura.SetActive(true);
                 //Activa la imagen de la captura pertinente
                 ImagenPezNormal.SetActive(true);
+                //Reproduce el sonido de captura
+                Instantiate(SonidoCaptura);
                 //Suma 1 al contador de la captura pertinente
                 contadorPezNormal ++;
                 //Suma 1 al contador total de capturas
@@ -244,6 +250,8 @@ public class CapturaPez : MonoBehaviour
                 PanelCaptura.SetActive(true);
                 //Activa la imagen de la captura pertinente
                 ImagenPezNormal2.SetActive(true);
+                //Reproduce el sonido de captura
+                Instantiate(SonidoCaptura);
                 //Suma 1 al contador de la captura pertinente
                 contadorPezNormal2 ++;
                 //Suma 1 al contador total de capturas
@@ -261,6 +269,8 @@ public class CapturaPez : MonoBehaviour
                 PanelCaptura.SetActive(true);
                 //Activa la imagen de la captura pertinente
                 ImagenPezRaro.SetActive(true);
+                //Reproduce el sonido de captura
+                Instantiate(SonidoCaptura);
                 //Suma 1 al contador de la captura pertinente
                 contadorPezRaro ++;
                 //Suma 1 al contador total de capturas
@@ -278,6 +288,8 @@ public class CapturaPez : MonoBehaviour
                 PanelCaptura.SetActive(true);
                 //Activa la imagen de la captura pertinente
                 ImagenAlga.SetActive(true);
+                //Reproduce el sonido de captura
+                Instantiate(SonidoCaptura);
                 //Suma 1 al contador de la captura pertinente
                 contadorAlga ++;
                 //Suma 1 al contador total de capturas
@@ -295,6 +307,8 @@ public class CapturaPez : MonoBehaviour
                 PanelCaptura.SetActive(true);
                 //Activa la imagen de la captura pertinente
                 ImagenBota.SetActive(true);
+                //Reproduce el sonido de captura
+                Instantiate(SonidoCaptura);
                 //Suma 1 al contador de la captura pertinente
                 contadorBota ++;
                 //Suma 1 al contador total de capturas
@@ -312,6 +326,8 @@ public class CapturaPez : MonoBehaviour
                 PanelCaptura.SetActive(true);
                 //Activa la imagen de la captura pertinente
                 ImagenTesoro.SetActive(true);
+                //Reproduce el sonido de captura
+                Instantiate(SonidoCaptura);
                 //Suma 1 al contador de la captura pertinente
                 contadorTesoro ++;
                 //Suma 1 al contador total de capturas
