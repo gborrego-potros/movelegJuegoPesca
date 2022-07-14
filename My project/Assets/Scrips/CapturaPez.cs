@@ -101,7 +101,7 @@ public class CapturaPez : MonoBehaviour
     //Corrutina para la animacion de captura
     IEnumerator animacionCapturar()
     {
-        for(int x = 0; x != tiempoEspera; x++)
+        /*for(int x = 0; x != tiempoEspera; x++)
         {
             if(pesca >= porcentajePezNormalMin && pesca <= porcentajePezNormalMax)
             {
@@ -152,7 +152,7 @@ public class CapturaPez : MonoBehaviour
                     yield return new WaitForSeconds(0.1f);
 
             }
-        }
+        }*/
 
         for(int x = 0; x != tiempoEspera; x++)
         {
