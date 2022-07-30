@@ -45,6 +45,22 @@ public class CapturaPez : MonoBehaviour
     public int contadorTesoro = 0;
     public int contadorTotal = 0;
 
+    //Contadores de capturas
+    public int contadorPezNormalR = 0;
+    public int contadorPezNormal2R = 0;
+    public int contadorPezRaroR = 0;
+    public int contadorBotaR = 0;
+    public int contadorAlgaR = 0;
+    public int contadorTesoroR = 0;
+
+    //Contadores de capturas
+    public int contadorPezNormalVisual = 0;
+    public int contadorPezNormal2Visual = 0;
+    public int contadorPezRaroVisual = 0;
+    public int contadorBotaVisual = 0;
+    public int contadorAlgaVisual = 0;
+    public int contadorTesoroVisual = 0;
+
     //Porcentaje minimo y maximo de captura del pez normal
     public int porcentajePezNormalMin = 1;
     public int porcentajePezNormalMax = 20;
@@ -68,6 +84,17 @@ public class CapturaPez : MonoBehaviour
     //Porcentaje minimo y maximo de captura del tesoro
     public int porcentajeTesoroMin = 91;
     public int porcentajeTesoroMax = 100;
+
+    //Valor del puntaje de cada cosa a capturar
+    public int valorPezNormal = 150;
+    public int valorPezNormal2 = 150;
+    public int valorPezRaro = 500;
+    public int valorAlga = 100;
+    public int valorBota = 100;
+    public int valorTesoro = 1000;
+
+    public int Score = 0;
+    public int ScoreR = 0;
 
     //Variables para la animacion
     float velocidad = 10f;
@@ -96,6 +123,34 @@ public class CapturaPez : MonoBehaviour
         posicionAlgaY = SpriteAlga.transform.position.y;
         posicionTesoroY = SpriteTesoro.transform.position.y;
         StartCoroutine("animacionCapturar");
+    }
+
+    public int getScore()
+    {
+        return Score;
+    }
+
+    public int getScoreR()
+    {
+        return ScoreR;
+    }
+
+    public void resetContadores()
+    {
+        contadorPezNormalVisual = 0;
+        puntajePezNormal.text = contadorPezNormalVisual.ToString();
+        contadorPezNormal2Visual = 0;
+        puntajePezNormal2.text = contadorPezNormal2Visual.ToString();
+        contadorPezRaroVisual = 0;
+        puntajePezRaro.text = contadorPezRaroVisual.ToString();
+        contadorBotaVisual = 0;
+        puntajeBota.text = contadorBotaVisual.ToString();
+        contadorAlgaVisual = 0;
+        puntajeAlga.text = contadorAlgaVisual.ToString();
+        contadorTesoroVisual = 0;
+        puntajeTesoro.text = contadorTesoroVisual.ToString();
+        contadorTotal = 0;
+        puntajeTotal.text = contadorTotal.ToString();
     }
 
     //Corrutina para la animacion de captura
@@ -223,7 +278,7 @@ public class CapturaPez : MonoBehaviour
     }
 
     //Metodo que despliega la captura
-    public void DesplegarCaptura(int pesca)
+    public void DesplegarCaptura(int pesca, int esRepeticionR)
     {
         if(pesca >= porcentajePezNormalMin && pesca <= porcentajePezNormalMax)
         {
@@ -233,12 +288,29 @@ public class CapturaPez : MonoBehaviour
                 ImagenPezNormal.SetActive(true);
                 //Reproduce el sonido de captura
                 Instantiate(SonidoCaptura);
-                //Suma 1 al contador de la captura pertinente
-                contadorPezNormal ++;
-                //Suma 1 al contador total de capturas
-                contadorTotal++;
+                        //Valora si es una repeticion de rodilla o tobillo
+                        if(esRepeticionR == 1)
+                        {
+                        //Suma 1 al contador de la captura pertinente
+                        contadorPezNormal ++;
+                        //Suma 1 al contador total de capturas
+                        contadorTotal++;
+                        //Suma al score el valor de la captura
+                        Score = Score + valorPezNormal;
+                        }
+                        else
+                        {
+                        //Suma 1 al contador de la captura pertinente
+                        contadorPezNormalR ++;
+                        //Suma 1 al contador total de capturas
+                        contadorTotal++;
+                        //Suma al score el valor de la captura
+                        ScoreR = ScoreR + valorPezNormal;
+                        }
+                //Aumenta el contador visual
+                contadorPezNormalVisual++;
                 //Actualiza el contador visual de la captura pertinente
-                puntajePezNormal.text = contadorPezNormal.ToString();
+                puntajePezNormal.text = contadorPezNormalVisual.ToString();
                 //Actualiza el contador visual total de capturas
                 puntajeTotal.text = contadorTotal.ToString();
                 //Inicia la corrutina para esperar 3 segundos
@@ -252,12 +324,29 @@ public class CapturaPez : MonoBehaviour
                 ImagenPezNormal2.SetActive(true);
                 //Reproduce el sonido de captura
                 Instantiate(SonidoCaptura);
-                //Suma 1 al contador de la captura pertinente
-                contadorPezNormal2 ++;
-                //Suma 1 al contador total de capturas
-                contadorTotal++;
+                        //Valora si es una repeticion de rodilla o tobillo
+                        if(esRepeticionR == 1)
+                        {
+                        //Suma 1 al contador de la captura pertinente
+                        contadorPezNormal2 ++;
+                        //Suma 1 al contador total de capturas
+                        contadorTotal++;
+                        //Suma al score el valor de la captura
+                        Score = Score + valorPezNormal2;
+                        }
+                        else
+                        {
+                        //Suma 1 al contador de la captura pertinente
+                        contadorPezNormal2R ++;
+                        //Suma 1 al contador total de capturas
+                        contadorTotal++;
+                        //Suma al score el valor de la captura
+                        ScoreR = ScoreR + valorPezNormal2;
+                        }
+                //Aumenta el contador visual
+                contadorPezNormal2Visual++;
                 //Actualiza el contador visual de la captura pertinente
-                puntajePezNormal2.text = contadorPezNormal2.ToString();
+                puntajePezNormal2.text = contadorPezNormal2Visual.ToString();
                 //Actualiza el contador visual total de capturas
                 puntajeTotal.text = contadorTotal.ToString();
                 //Inicia la corrutina para esperar 3 segundos
@@ -271,12 +360,29 @@ public class CapturaPez : MonoBehaviour
                 ImagenPezRaro.SetActive(true);
                 //Reproduce el sonido de captura
                 Instantiate(SonidoCaptura);
-                //Suma 1 al contador de la captura pertinente
-                contadorPezRaro ++;
-                //Suma 1 al contador total de capturas
-                contadorTotal++;
+                        //Valora si es una repeticion de rodilla o tobillo
+                        if(esRepeticionR == 1)
+                        {
+                        //Suma 1 al contador de la captura pertinente
+                        contadorPezRaro ++;
+                        //Suma 1 al contador total de capturas
+                        contadorTotal++;
+                        //Suma al score el valor de la captura
+                        Score = Score + valorPezRaro;
+                        }
+                        else
+                        {
+                        //Suma 1 al contador de la captura pertinente
+                        contadorPezRaroR ++;
+                        //Suma 1 al contador total de capturas
+                        contadorTotal++;
+                        //Suma al score el valor de la captura
+                        ScoreR = ScoreR + valorPezRaro;
+                        }
+                //Aumenta el contador visual
+                contadorPezRaroVisual++;
                 //Actualiza el contador visual de la captura pertinente
-                puntajePezRaro.text = contadorPezRaro.ToString();
+                puntajePezRaro.text = contadorPezRaroVisual.ToString();
                 //Actualiza el contador visual total de capturas
                 puntajeTotal.text = contadorTotal.ToString();
                 //Inicia la corrutina para esperar 3 segundos
@@ -290,12 +396,29 @@ public class CapturaPez : MonoBehaviour
                 ImagenAlga.SetActive(true);
                 //Reproduce el sonido de captura
                 Instantiate(SonidoCaptura);
-                //Suma 1 al contador de la captura pertinente
-                contadorAlga ++;
-                //Suma 1 al contador total de capturas
-                contadorTotal++;
+                        //Valora si es una repeticion de rodilla o tobillo
+                        if(esRepeticionR == 1)
+                        {
+                        //Suma 1 al contador de la captura pertinente
+                        contadorAlga ++;
+                        //Suma 1 al contador total de capturas
+                        contadorTotal++;
+                        //Suma al score el valor de la captura
+                        Score = Score + valorAlga;
+                        }
+                        else
+                        {
+                        //Suma 1 al contador de la captura pertinente
+                        contadorAlgaR ++;
+                        //Suma 1 al contador total de capturas
+                        contadorTotal++;
+                        //Suma al score el valor de la captura
+                        ScoreR = ScoreR + valorAlga;
+                        }
+                //Aumenta el contador visual
+                contadorAlgaVisual++;
                 //Actualiza el contador visual de la captura pertinente
-                puntajeAlga.text = contadorAlga.ToString();
+                puntajeAlga.text = contadorAlgaVisual.ToString();
                 //Actualiza el contador visual total de capturas
                 puntajeTotal.text = contadorTotal.ToString();
                 //Inicia la corrutina para esperar 3 segundos
@@ -309,12 +432,29 @@ public class CapturaPez : MonoBehaviour
                 ImagenBota.SetActive(true);
                 //Reproduce el sonido de captura
                 Instantiate(SonidoCaptura);
-                //Suma 1 al contador de la captura pertinente
-                contadorBota ++;
-                //Suma 1 al contador total de capturas
-                contadorTotal++;
+                        //Valora si es una repeticion de rodilla o tobillo
+                        if(esRepeticionR == 1)
+                        {
+                        //Suma 1 al contador de la captura pertinente
+                        contadorBota ++;
+                        //Suma 1 al contador total de capturas
+                        contadorTotal++;
+                        //Suma al score el valor de la captura
+                        Score = Score + valorBota;
+                        }
+                        else
+                        {
+                        //Suma 1 al contador de la captura pertinente
+                        contadorBotaR ++;
+                        //Suma 1 al contador total de capturas
+                        contadorTotal++;
+                        //Suma al score el valor de la captura
+                        ScoreR = ScoreR + valorBota;
+                        }
+                //Aumenta el contador visual
+                contadorBotaVisual++;
                 //Actualiza el contador visual de la captura pertinente
-                puntajeBota.text = contadorBota.ToString();
+                puntajeBota.text = contadorBotaVisual.ToString();
                 //Actualiza el contador visual total de capturas
                 puntajeTotal.text = contadorTotal.ToString();
                 //Inicia la corrutina para esperar 3 segundos
@@ -328,12 +468,29 @@ public class CapturaPez : MonoBehaviour
                 ImagenTesoro.SetActive(true);
                 //Reproduce el sonido de captura
                 Instantiate(SonidoCaptura);
-                //Suma 1 al contador de la captura pertinente
-                contadorTesoro ++;
-                //Suma 1 al contador total de capturas
-                contadorTotal++;
+                        //Valora si es una repeticion de rodilla o tobillo
+                        if(esRepeticionR == 1)
+                        {
+                        //Suma 1 al contador de la captura pertinente
+                        contadorTesoro ++;
+                        //Suma 1 al contador total de capturas
+                        contadorTotal++;
+                        //Suma al score el valor de la captura
+                        Score = Score + valorTesoro;
+                        }
+                        else
+                        {
+                        //Suma 1 al contador de la captura pertinente
+                        contadorTesoroR ++;
+                        //Suma 1 al contador total de capturas
+                        contadorTotal++;
+                        //Suma al score el valor de la captura
+                        ScoreR = ScoreR + valorTesoro;
+                        }
+                //Aumenta el contador visual
+                contadorTesoroVisual++;
                 //Actualiza el contador visual de la captura pertinente
-                puntajeTesoro.text = contadorTesoro.ToString();
+                puntajeTesoro.text = contadorTesoroVisual.ToString();
                 //Actualiza el contador visual total de capturas
                 puntajeTotal.text = contadorTotal.ToString();
                 //Inicia la corrutina para esperar 3 segundos

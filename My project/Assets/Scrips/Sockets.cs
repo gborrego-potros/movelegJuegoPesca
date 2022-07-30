@@ -8,28 +8,46 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.UI;
 
 public class Sockets : MonoBehaviour
 {
     //Juego Variables
-
+ 
     public CapturaPez captura;
     public ResultadoPuntaje puntajes;
     public HiloCania hiloAnimaciones;
     public PosicionarCebo ceboAnimacion;
 
+    public GameObject resumenPesca;
+
+    public GameObject canvasResultado;
+
+    public GameObject canvasPausaPersonaje;
+ 
+    [SerializeField] private Text puntaje;
+    [SerializeField] private Text puntajeR;
+ 
     int repeticionesEsperadasTobillo = 4;
 
     int RepeticionesEsperadasRodilla = 4;
 
     int numeroRNG;
 
+    int Score;
+    int ScoreR;
+
     //Metodos del juego
 
     IEnumerator DesplegarResultado()
     {
+        Score = captura.getScore();
+        puntaje.text = Score.ToString();
+        ScoreR = captura.getScoreR();
+        puntajeR.text = ScoreR.ToString();
         yield return new WaitForSeconds(3f);
-        puntajes.puntajeDesplegar(captura.contadorPezNormal, captura.contadorPezNormal2, captura.contadorPezRaro, captura.contadorBota, captura.contadorAlga, captura.contadorTesoro);
+        puntajes.puntajeDesplegar(captura.contadorPezNormal, captura.contadorPezNormal2, captura.contadorPezRaro, captura.contadorBota, captura.contadorAlga, captura.contadorTesoro,
+        captura.contadorPezNormalR, captura.contadorPezNormal2R, captura.contadorPezRaroR, captura.contadorBotaR, captura.contadorAlgaR, captura.contadorTesoroR);
     }
 
     IEnumerator CapturaAlgo()
@@ -44,10 +62,34 @@ public class Sockets : MonoBehaviour
             {captura.iniciarAnimacion(numeroRNG, 20);});
             yield return new WaitForSeconds(5f);
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-            {captura.DesplegarCaptura(numeroRNG);});
+            {captura.DesplegarCaptura(numeroRNG, 1);});
             yield return new WaitForSeconds(3f);
             
             if(cont_R != RepeticionesEsperadasRodilla || cont_T != repeticionesEsperadasTobillo)
+            {
+                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                {hiloAnimaciones.animacionCorrutinaAbajo();});
+                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                {ceboAnimacion.iniciarAnimacionCorrutinaAbajo();});
+            }
+    }
+
+    IEnumerator CapturaAlgoRepeticion()
+    {
+            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+            {numeroRNG = captura.RNGCaptura();});
+            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+            {hiloAnimaciones.animacionCorrutinaArriba();});
+            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+            {ceboAnimacion.iniciarAnimacionCorrutinaArriba();});
+            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+            {captura.iniciarAnimacion(numeroRNG, 20);});
+            yield return new WaitForSeconds(5f);
+            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+            {captura.DesplegarCaptura(numeroRNG, 0);});
+            yield return new WaitForSeconds(3f);
+            
+            if(contadorRepRodillaRealizadas != NRR || contadorRepTobilloRealizadas != NRT)
             {
                 ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                 {hiloAnimaciones.animacionCorrutinaAbajo();});
@@ -145,14 +187,6 @@ public class Sockets : MonoBehaviour
 
     // Variables Extras Auxiliares 
 
-
-
-    // Anterior socket
-    /*
-    Socket serverSocket1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-    Socket conexion;
-    IPEndPoint connect = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 2000);
-    */
     // Start is called before the first frame update
 
     void Start()
@@ -160,32 +194,6 @@ public class Sockets : MonoBehaviour
         SetupServer();
     }
 
-    // Socket Probado
-    /*
-    public void Server()
-    {
-        serverSocket1.Bind(connect);
-        serverSocket1.Listen(10);
-
-        conexion = serverSocket1.Accept();
-        Console.WriteLine("Conexion aceptada");
-
-        byte[] recibir_info = new byte[1024];
-        string data = "";
-        int array_size = 0;
-        
-        while(true){
-        array_size = conexion.Receive(recibir_info, 0, recibir_info.Length, 0);
-        Array.Resize(ref recibir_info, array_size);
-
-        data = Encoding.Default.GetString(recibir_info);
-        
-        Debug.Log("La info recibida es: {0}" + data);
-        }
-        
-        Console.ReadKey();
-    }
-    */
 
     /*-----------------------------Funciones de Calculos de Variables-------------------------------*/
 
@@ -407,6 +415,7 @@ public class Sockets : MonoBehaviour
                     //if (cont_T == NRT)
                     if (cont_T == NRMedicion)
                     {
+                        Debug.Log("ultima captura");
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
                             StartCoroutine("CapturaAlgo");
@@ -424,6 +433,8 @@ public class Sockets : MonoBehaviour
 
                         //s1.lbl
                         //Debug.Log("Mediciones completas");
+                        //Task.Delay(2000);
+                         
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
                             EditorUtility.DisplayDialog("Mensaje del Sistema", "Mediciones completas", "OK");
@@ -448,12 +459,19 @@ public class Sockets : MonoBehaviour
                         // Revisar
                         //Num_Dis_Vel_R.Minimum = disminucion_minima_rodilla;
 
-                        Debug.Log("Entre aqui");
-                        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                        
+                        /*ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
                             StartCoroutine("DesplegarResultado");
                         });
-                        
+                        */
+
+                        //Antes de que inicie la terapia por segunda vez (Rodilla) tiene que hacer esto:
+                        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                        {
+                            captura.resetContadores();
+                        });
+
                         Iniciarterapia();
                     }
 
@@ -503,6 +521,7 @@ public class Sockets : MonoBehaviour
 
                         //Debug.Log("Desea comenzar con las repeticiones de tobillo");
                         bool decisionRepeticionesTobillo;
+                        Task.Delay(2000);
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
                             decisionRepeticionesTobillo = EditorUtility.DisplayDialog("Mensaje de Sistema", "Desea comenzar con las repeticiones de tobillo", "Si", "No");
@@ -614,7 +633,7 @@ public class Sockets : MonoBehaviour
                 {
                     ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                     {
-                        StartCoroutine("CapturaAlgo");
+                        StartCoroutine("CapturaAlgoRepeticion");
                     });
                     
                     contadorRepTobilloRealizadas = Convert.ToInt32(messagges[2]);
@@ -680,7 +699,7 @@ public class Sockets : MonoBehaviour
                 {
                     ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                     {
-                        StartCoroutine("CapturaAlgo");
+                        StartCoroutine("CapturaAlgoRepeticion");
                     });
 
                     contadorRepRodillaRealizadas = Convert.ToInt32(messagges[2]);
@@ -910,11 +929,12 @@ public class Sockets : MonoBehaviour
             //Programar sesion en DB
 
             //GenerarRegistroPrograma();
+            /*
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
             {
                 EditorUtility.DisplayDialog("Mensaje de Sistema", "Se ha programado la sesión", "OK");
             });
-
+            */
 
 
             //Resultados Generales en DB
@@ -935,7 +955,22 @@ public class Sockets : MonoBehaviour
             {
                 result = EditorUtility.DisplayDialog("Mensaje de Sistema", "El dispositivo imitador se colocara en la posicion inicial para el paciente, por favor espere", "OK", "Cancel");
             });
-
+            
+            /*ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+            {
+                hiloAnimaciones.animacionCorrutinaAbajo();
+                ceboAnimacion.iniciarAnimacionCorrutinaAbajo();
+            });
+            /*ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+            {
+                resumenPesca.SetActive(false);
+                canvasResultado.SetActive(false);
+            }); 
+            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+            {
+                canvasPausaPersonaje.SetActive(true);   
+            });
+            */
 
             if (result = true)
             {
