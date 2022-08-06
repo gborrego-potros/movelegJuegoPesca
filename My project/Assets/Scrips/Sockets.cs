@@ -9,6 +9,8 @@ using System.Net.Sockets;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
+using System.Threading;
+
 
 public class Sockets : MonoBehaviour
 {
@@ -24,6 +26,7 @@ public class Sockets : MonoBehaviour
     public GameObject canvasResultado;
 
     public GameObject canvasPausaPersonaje;
+    public GameObject fondo;
  
     [SerializeField] private Text puntaje;
     [SerializeField] private Text puntajeR;
@@ -460,12 +463,12 @@ public class Sockets : MonoBehaviour
                         //Num_Dis_Vel_R.Minimum = disminucion_minima_rodilla;
 
                         
-                        /*ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
                             StartCoroutine("DesplegarResultado");
                         });
-                        */
-
+                        
+                        Thread.Sleep(2000);
                         //Antes de que inicie la terapia por segunda vez (Rodilla) tiene que hacer esto:
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
@@ -521,10 +524,11 @@ public class Sockets : MonoBehaviour
 
                         //Debug.Log("Desea comenzar con las repeticiones de tobillo");
                         bool decisionRepeticionesTobillo;
-                        Task.Delay(2000);
+                        
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
-                            decisionRepeticionesTobillo = EditorUtility.DisplayDialog("Mensaje de Sistema", "Desea comenzar con las repeticiones de tobillo", "Si", "No");
+                            //Thread.Sleep(2000);
+                            decisionRepeticionesTobillo = EditorUtility.DisplayDialog("Mensaje de Sistema", "Desea comenzar con las repeticiones de tobillo", "Si", "No");  
                         });
 
 
@@ -735,6 +739,29 @@ public class Sockets : MonoBehaviour
 
                         if (decisionColocarPiernaPaciente = true)
                         {
+                            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                            {
+                                resumenPesca.SetActive(false);
+                            }); 
+                            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                            {
+                                canvasResultado.SetActive(false);
+                            }); 
+                            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                            {
+                                fondo.SetActive(true);   
+                            });
+                            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                            {
+                                canvasPausaPersonaje.SetActive(true);   
+                            });
+                            
+                            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                            {
+                                hiloAnimaciones.animacionCorrutinaAbajo();
+                                ceboAnimacion.iniciarAnimacionCorrutinaAbajo();
+                            });
+
                             string mensaje = "X,0;" + VelocidadRodillaF + "," + VelocidadRodillaE + "," + Convert.ToString(NuevoDesplazamientoConv) + "," + Convert.ToString(NuevoDesplazamientoConv) + ",0," + NRR + ",0;0,0,0,0,0,0,0,";
                             EnviarRasp(mensaje);
                             bandera = true;
@@ -958,19 +985,22 @@ public class Sockets : MonoBehaviour
             
             /*ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
             {
-                hiloAnimaciones.animacionCorrutinaAbajo();
-                ceboAnimacion.iniciarAnimacionCorrutinaAbajo();
-            });
-            /*ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-            {
                 resumenPesca.SetActive(false);
+            }); 
+            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+            {
                 canvasResultado.SetActive(false);
             }); 
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
             {
                 canvasPausaPersonaje.SetActive(true);   
             });
-            */
+            
+            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+            {
+                hiloAnimaciones.animacionCorrutinaAbajo();
+                ceboAnimacion.iniciarAnimacionCorrutinaAbajo();
+            });*/
 
             if (result = true)
             {

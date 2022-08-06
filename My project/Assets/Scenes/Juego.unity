@@ -4102,6 +4102,7 @@ MonoBehaviour:
   resumenPesca: {fileID: 2068952410}
   canvasResultado: {fileID: 559786710}
   canvasPausaPersonaje: {fileID: 1406821654}
+  fondo: {fileID: 3080620}
   puntaje: {fileID: 1435048257}
   puntajeR: {fileID: 1235364627}
   NRT: 0
