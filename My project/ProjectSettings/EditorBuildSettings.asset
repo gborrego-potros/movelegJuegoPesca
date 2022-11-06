@@ -6,24 +6,27 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Main_Menu.unity
+    guid: e6155ccfcd8981542b92101359de26fa
+  - enabled: 1
+    path: Assets/Scenes/Opciones.unity
+    guid: fb7fe9af8fa55184fbb0e8e9ebc69ffa
+  - enabled: 1
+    path: Assets/Scenes/Cargar_Terapia.unity
+    guid: dc08423fe707cce4f814e3f6abcd772d
+  - enabled: 0
     path: Assets/Scenes/Juego.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 0
     path: Assets/Scenes/Elegir_Ejercicio.unity
     guid: 6ddc13cf07b229640b9cbfcfa468e5fe
-  - enabled: 1
-    path: Assets/Scenes/Main_Menu.unity
-    guid: e6155ccfcd8981542b92101359de26fa
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Resumen_Pesca.unity
     guid: 99ea0b32cc061334ca5e1227cec8ef57
-  - enabled: 1
-    path: Assets/Scenes/Opciones.unity
-    guid: fb7fe9af8fa55184fbb0e8e9ebc69ffa
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Inicio_Sesion.unity
     guid: 792bcb8fb82d03b418ba4185e62d8822
   - enabled: 1
-    path: Assets/Scenes/Cargar_Terapia.unity
-    guid: dc08423fe707cce4f814e3f6abcd772d
+    path: Assets/Scenes/Juego1.unity
+    guid: dfef8f83210c0164285e06e20b81e1fc
   m_configObjects: {}
