@@ -24,7 +24,13 @@ public class ResultadoPuntaje : MonoBehaviour
     [SerializeField] private GameObject resumenPesca;
     //Canvas de Puntajes
     [SerializeField] private GameObject canvasResultados;
-    [SerializeField] private GameObject canvasPausaPersonaje;
+    [SerializeField] private GameObject personaje;
+    [SerializeField] private GameObject botonPausa;
+    [SerializeField] private GameObject textoPantallaPrincipal;
+
+    /*
+    
+    */
     [SerializeField] private GameObject fondo;
     //Método que despliega la puntacion final de la captura
     public void puntajeDesplegar(int numPecesNormales, int numPecesNormales2, int numPecesRaros, int numBotas, int numAlgas, int numTesoros,
@@ -50,7 +56,9 @@ public class ResultadoPuntaje : MonoBehaviour
         canvasResultados.SetActive(true);
 
         //Desactiva la pantalla del juego
-        canvasPausaPersonaje.SetActive(false);
+        personaje.SetActive(false);
+        botonPausa.SetActive(false);
+        textoPantallaPrincipal.SetActive(false);
         fondo.SetActive(false);
     }
 }

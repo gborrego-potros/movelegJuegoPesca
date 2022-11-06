@@ -33,7 +33,7 @@ public class ControladorDatosTerapia : MonoBehaviour
         try
         {
             var result = JsonConvert.DeserializeObject<Terapia>(jsonResponse);
-            textElement.text = result.fechaInicio.ToString();
+            //textElement.text = result.fechaInicio.ToString();
             Debug.Log($"Sucess: {www.downloadHandler.text}");
             
         }

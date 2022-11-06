@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine.UI;
 using System.Threading;
 
@@ -15,22 +17,34 @@ using System.Threading;
 public class Sockets : MonoBehaviour
 {
     //Juego Variables
- 
     public CapturaPez captura;
     public ResultadoPuntaje puntajes;
     public HiloCania hiloAnimaciones;
     public PosicionarCebo ceboAnimacion;
 
+    public Mensajes mensajes;
+
     public GameObject resumenPesca;
 
     public GameObject canvasResultado;
 
-    public GameObject canvasPausaPersonaje;
+    public GameObject canvasCargarTerapia;
+
+    public GameObject personaje;
+
+    public GameObject botonPausa;
+    public GameObject textoPantallaPrincipal;
     public GameObject fondo;
- 
+    public GameObject botonMensajeConfirmar;
+    public GameObject botonMensajeCancelar;
+    public InputField inputNumRepeticiones;
+    public InputField inputNumRepRodilla;
+    public InputField inputNumRepTobillo;
+    bool primera = true;
+
     [SerializeField] private Text puntaje;
     [SerializeField] private Text puntajeR;
- 
+
     int repeticionesEsperadasTobillo = 4;
 
     int RepeticionesEsperadasRodilla = 4;
@@ -40,6 +54,7 @@ public class Sockets : MonoBehaviour
     int Score;
     int ScoreR;
 
+    public int contadorDatosExtras = 0;
     //Metodos del juego
 
     IEnumerator DesplegarResultado()
@@ -53,52 +68,66 @@ public class Sockets : MonoBehaviour
         captura.contadorPezNormalR, captura.contadorPezNormal2R, captura.contadorPezRaroR, captura.contadorBotaR, captura.contadorAlgaR, captura.contadorTesoroR);
     }
 
+
+
     IEnumerator CapturaAlgo()
     {
+        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+        { hiloAnimaciones.animacionCorrutinaAbajo(); });
+        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+        { ceboAnimacion.iniciarAnimacionCorrutinaAbajo(); });
+        yield return new WaitForSeconds(3f);
+        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+        { numeroRNG = captura.RNGCaptura(); });
+        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+        { hiloAnimaciones.animacionCorrutinaArriba(); });
+        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+        { ceboAnimacion.iniciarAnimacionCorrutinaArriba(); });
+        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+        { captura.iniciarAnimacion(numeroRNG); });
+        yield return new WaitForSeconds(5f);
+        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+        { captura.DesplegarCaptura(numeroRNG, 1); });
+        yield return new WaitForSeconds(3f);
+
+        /*if (cont_R != RepeticionesEsperadasRodilla || cont_T != repeticionesEsperadasTobillo)
+        {
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-            {numeroRNG = captura.RNGCaptura();});
+            { hiloAnimaciones.animacionCorrutinaAbajo(); });
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-            {hiloAnimaciones.animacionCorrutinaArriba();});
-            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-            {ceboAnimacion.iniciarAnimacionCorrutinaArriba();});
-            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-            {captura.iniciarAnimacion(numeroRNG, 20);});
-            yield return new WaitForSeconds(5f);
-            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-            {captura.DesplegarCaptura(numeroRNG, 1);});
-            yield return new WaitForSeconds(3f);
-            
-            if(cont_R != RepeticionesEsperadasRodilla || cont_T != repeticionesEsperadasTobillo)
-            {
-                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-                {hiloAnimaciones.animacionCorrutinaAbajo();});
-                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-                {ceboAnimacion.iniciarAnimacionCorrutinaAbajo();});
-            }
+            { ceboAnimacion.iniciarAnimacionCorrutinaAbajo(); });
+        }*/
     }
 
     IEnumerator CapturaAlgoRepeticion()
     {
+        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+        { hiloAnimaciones.animacionCorrutinaAbajo(); });
+        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+        { ceboAnimacion.iniciarAnimacionCorrutinaAbajo(); });
+        yield return new WaitForSeconds(3f);
+        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+        { numeroRNG = captura.RNGCaptura(); });
+        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+        { hiloAnimaciones.animacionCorrutinaArriba(); });
+        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+        { ceboAnimacion.iniciarAnimacionCorrutinaArriba(); });
+        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+        { captura.iniciarAnimacion(numeroRNG); });
+        yield return new WaitForSeconds(5f);
+        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+        { captura.DesplegarCaptura(numeroRNG, 0); });
+        yield return new WaitForSeconds(3f);
+
+        /*
+        if (contadorRepRodillaRealizadas != NRR || contadorRepTobilloRealizadas != NRT)
+        {
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-            {numeroRNG = captura.RNGCaptura();});
+            { hiloAnimaciones.animacionCorrutinaAbajo(); });
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-            {hiloAnimaciones.animacionCorrutinaArriba();});
-            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-            {ceboAnimacion.iniciarAnimacionCorrutinaArriba();});
-            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-            {captura.iniciarAnimacion(numeroRNG, 20);});
-            yield return new WaitForSeconds(5f);
-            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-            {captura.DesplegarCaptura(numeroRNG, 0);});
-            yield return new WaitForSeconds(3f);
-            
-            if(contadorRepRodillaRealizadas != NRR || contadorRepTobilloRealizadas != NRT)
-            {
-                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-                {hiloAnimaciones.animacionCorrutinaAbajo();});
-                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-                {ceboAnimacion.iniciarAnimacionCorrutinaAbajo();});
-            }
+            { ceboAnimacion.iniciarAnimacionCorrutinaAbajo(); });
+        }
+        */
     }
 
     //Cuando le da al boton de disminuir velocidad
@@ -195,6 +224,19 @@ public class Sockets : MonoBehaviour
     void Start()
     {
         SetupServer();
+
+    }
+
+    void Update()
+    {
+        //Debug.Log(mensajes.GetConfirmacion());
+
+        /*
+        if(mensajes.GetConfirmacion()){
+                
+                mensajes.OcultarCanvas();
+        }
+        */
     }
 
 
@@ -290,6 +332,17 @@ public class Sockets : MonoBehaviour
         angulo_min_tobillo = Promedio_min_PT + ajusteAngular;
     }
 
+    public void AsignarNumeroRepeticiones()
+    {        
+        NRMedicion = int.Parse(inputNumRepeticiones.text);
+        RepeticionesEsperadasRodilla = NRMedicion;
+        repeticionesEsperadasTobillo = NRMedicion;
+        NRT = int.Parse(inputNumRepTobillo.text);
+        NRR = int.Parse(inputNumRepRodilla.text);
+
+        canvasCargarTerapia.SetActive(false);
+    }
+
     private void ConversionVelocidadesRodilla()
     {
         try
@@ -327,15 +380,28 @@ public class Sockets : MonoBehaviour
             serverSocket.Bind(new IPEndPoint(IPAddress.Any, port));
             serverSocket.Listen(0);
             serverSocket.BeginAccept(AcceptCallback, null);
-            //Debug.Log("Servidor Listo");
-            EditorUtility.DisplayDialog("Mensaje del Sistema", "Servidor Listo", "OK");
+
+            // Mensaje Para el Usuario 
+            mensajes.ActivarCanvas();
+            mensajes.SetMensaje("Servidor Listo");
+            Time.timeScale = 0f;
+            mensajes.OcultarBotonCancelar();
+
         }
         catch (Exception error)
         {
-            EditorUtility.DisplayDialog("Error", error.Message, "OK");
+            // Mensaje de error para el usuario
+            mensajes.ActivarCanvas();
+            mensajes.SetMensaje("Ocurrió un error inesperado");
+            Debug.Log(error);
+            Debug.Log("Ocurrió un error inesperado: " + error.StackTrace);
+            Time.timeScale = 0f;
+            mensajes.OcultarBotonCancelar();
+            mensajes.funcionBotonConfirmarError();
+
         }
     }
-    //Investigar IAsyncResult AR
+
     private void AcceptCallback(IAsyncResult AR)
     {
         Socket socket;
@@ -352,6 +418,11 @@ public class Sockets : MonoBehaviour
         serverSocket.BeginAccept(AcceptCallback, null);
     }
 
+    IEnumerator esperar()
+    {
+        yield return new WaitForSeconds(8f);
+    }
+
 
     private void ReceiveCallback(IAsyncResult AR)
     {
@@ -361,15 +432,21 @@ public class Sockets : MonoBehaviour
         {
             received = current.EndReceive(AR);
         }
-        catch (SocketException)
+        catch (SocketException error)
         {
             //Revisar
             //ActualizarRepeticiones();
-            //Debug.Log("Se ha desconectado el dispositivo");
+
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
             {
-                EditorUtility.DisplayDialog("Alerta", "Se ha desconectado el dispositivo", "OK", "Cancel");
+                mensajes.ActivarCanvas();
+                mensajes.SetMensaje("1: Se perdió la conexión con el dispositivo");
+                Debug.Log("1: Se perdió la conexión con el dispositivo" + error.StackTrace);
+                Time.timeScale = 0f;
+                mensajes.OcultarBotonCancelar();
+                mensajes.funcionBotonConfirmarError();
             });
+
             // Don't shutdown because the socket may be disposed and its disconnected anyway.
             current.Close();
             clientSockets.Remove(current);
@@ -384,14 +461,53 @@ public class Sockets : MonoBehaviour
         //{string[] messagges = renglon.Split('|');
 
         string[] messagges = text.Split('|');
+        /*
+        Debug.Log("El tamaño del mensaje es de: " + messagges.Length);
+        for(int i = 0; i < messagges.Length;i++){
+            Debug.Log("Contendio del arreglo posicion " + i + ": " + messagges[i]);
+        }
+        */
         if (messagges.Length > 1)
         {
             try
             {
+
                 //MessageBox.Show(messagges[1]);
                 if (messagges[1] == "Tobillo")
                 {
+                    /* 
+                    if (primera == true)
+                    {
+                        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                        {
+                            bool decisionRepeticionesTobillo;
+                            mensajes.ActivarCanvas();
+                            mensajes.ActivarBotonCancelar();
+                            mensajes.SetMensaje("¿Desea comenzar con las repeticiones de tobillo?");
+                            Time.timeScale = 0f;
+                            decisionRepeticionesTobillo = mensajes.GetConfirmacion();
 
+                            //Revisar
+                            if (decisionRepeticionesTobillo == true)
+                            {
+                                //Enviar repeticiones de tobillo
+                                //string mensaje = "T," + NRT + "; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
+
+                                //string mensaje = "T," + NRMedicion + "; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
+
+                                //EnviarRasp(mensaje);
+
+                            }
+                            else if (decisionRepeticionesTobillo == false)
+                            {
+                                //Cancelar repeticiones de tobillo
+                                string mensaje = "X,0; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
+                                EnviarRasp(mensaje);
+                            }
+                        });
+                        primera = false;
+                    }
+                    */
                     string[] datos = messagges[2].Split(',');
                     PosicionT[cont_T, 0] = Convert.ToInt32(datos[0]) - 16;
                     TiemposT[cont_T, 0] = Convert.ToDouble(datos[2]);
@@ -407,8 +523,10 @@ public class Sockets : MonoBehaviour
                     //Revisar
                     //LB_PromDesTobillo.Text = Convert.ToString(cont_T) + "/" + Convert.ToString(NRMedicion); ;
 
-                    if(cont_T != repeticionesEsperadasTobillo)
+                    if (cont_T != repeticionesEsperadasTobillo)
                     {
+
+                        // Animacion para capturar algo.
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
                             StartCoroutine("CapturaAlgo");
@@ -418,7 +536,8 @@ public class Sockets : MonoBehaviour
                     //if (cont_T == NRT)
                     if (cont_T == NRMedicion)
                     {
-                        Debug.Log("ultima captura");
+
+                        // Animacion para capturar algo.
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
                             StartCoroutine("CapturaAlgo");
@@ -434,13 +553,16 @@ public class Sockets : MonoBehaviour
                         vel_prom_med_TPF = (Promedio_max_PT - Promedio_min_PT) / (Promedio_mMT / 1000);
 
 
-                        //s1.lbl
-                        //Debug.Log("Mediciones completas");
-                        //Task.Delay(2000);
-                         
+                        Thread.Sleep(12000);
+
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
-                            EditorUtility.DisplayDialog("Mensaje del Sistema", "Mediciones completas", "OK");
+                            mensajes.ActivarCanvas();
+                            mensajes.SetMensaje("Mediciones Completas");
+                            Time.timeScale = 0f;
+                            StartCoroutine("esperar");
+                            mensajes.OcultarBotonCancelar();
+
                         });
 
 
@@ -461,26 +583,28 @@ public class Sockets : MonoBehaviour
                         int disminucion_minima_rodilla = Convert.ToInt32((100 - ((100 * 4.54) / maximo_vel_rodilla)));
                         // Revisar
                         //Num_Dis_Vel_R.Minimum = disminucion_minima_rodilla;
+                        Thread.Sleep(2000);
 
-                        
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
                             StartCoroutine("DesplegarResultado");
                         });
-                        
-                        Thread.Sleep(2000);
+
+
                         //Antes de que inicie la terapia por segunda vez (Rodilla) tiene que hacer esto:
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
                             captura.resetContadores();
                         });
 
+                        Thread.Sleep(2000);
                         Iniciarterapia();
                     }
 
                 }
                 else if (messagges[1] == "Rodilla")
                 {
+
                     string[] datos = messagges[2].Split(',');
                     PosicionR[cont_R, 0] = Convert.ToInt32(datos[0]) + 2;//+2 posicion del sensor con respecto al centro 
                     TiemposR[cont_R, 0] = Convert.ToDouble(datos[2]);
@@ -496,22 +620,98 @@ public class Sockets : MonoBehaviour
                     //LB_PromDesRodilla.Text = Convert.ToString(cont_R)+"/"+ Convert.ToString(NRMedicion);
 
                     //if (cont_R == NRR)
-                    
-                    if(cont_R != RepeticionesEsperadasRodilla)
+
+                    if (cont_R < RepeticionesEsperadasRodilla)
                     {
+
+                        // Animacion para capturar algo.
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
                             StartCoroutine("CapturaAlgo");
                         });
                     }
-
-
-                    if (cont_R == NRMedicion)
+                    else if (cont_R == RepeticionesEsperadasRodilla)
                     {
+                        // Animacion para capturar algo.
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
                             StartCoroutine("CapturaAlgo");
+
+                            /*string mensaje = "T," + NRMedicion + "; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
+                            Debug.Log(mensaje);
+                            EnviarRasp(mensaje);
+                            */
+                            /*StartCoroutine("esperar");
+                            bool decisionRepeticionesTobillo;
+                            mensajes.ActivarCanvas();
+                            mensajes.ActivarBotonCancelar();
+                            mensajes.SetMensaje("¿Desea comenzar con las repeticiones de tobillo?");
+                            Time.timeScale = 0f;
+                            decisionRepeticionesTobillo = mensajes.GetConfirmacion();
+
+                            //Revisar
+                            if (decisionRepeticionesTobillo == true)
+                            {
+                                X,0; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,//Enviar repeticiones de tobillo
+                                //string mensaje = "T," + NRT + "; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
+                                string mensaje = "T," + NRMedicion + "; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
+
+                                EnviarRasp(mensaje);
+
+                            }
+                            else if (decisionRepeticionesTobillo == false)
+                            {
+                                //Cancelar repeticiones de tobillo
+                                string mensaje = "X,0; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
+                                EnviarRasp(mensaje);
+                            }*/
                         });
+
+                        Thread.Sleep(10000);
+
+                        bool decisionRepeticionesTobillo = false;
+
+                        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                        {
+                            mensajes.ActivarCanvas();
+                            mensajes.ActivarBotonCancelar();
+                            mensajes.SetMensaje("¿Desea comenzar con las repeticiones de tobillo?");
+                            Time.timeScale = 0f;
+
+                        });
+                        //Revisar
+                        //Thread.Sleep(5000);
+
+                        decisionRepeticionesTobillo = mensajes.GetConfirmacion();
+                        //Debug.Log(decisionRepeticionesTobillo = mensajes.GetConfirmacion());
+                        if (decisionRepeticionesTobillo == true)
+                        {
+                            //Enviar repeticiones de tobillo
+                            //string mensaje = "T," + NRT + "; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
+
+                            string mensaje = "T," + NRMedicion + "; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
+                            Debug.Log(mensaje);
+                            EnviarRasp(mensaje);
+                            //Time.timeScale = 1f;
+
+                        }
+                        else if (decisionRepeticionesTobillo == false)
+                        {
+                            //Cancelar repeticiones de tobillo
+                            string mensaje = "X,0; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
+                            EnviarRasp(mensaje);
+                        }
+
+                    }
+                    else
+                    {
+                        contadorDatosExtras = 0;
+
+                        throw new IndexOutOfRangeException();
+                    }
+
+                    if (cont_R == NRMedicion)
+                    {
 
                         Promedio_min_PR = sumatoria_min_PR / NRMedicion; // / NRR;
                         Promedio_max_PR = sumatoria_max_PR / NRMedicion; // / NRR;
@@ -522,32 +722,13 @@ public class Sockets : MonoBehaviour
                         vel_prom_med_RE = (Promedio_max_PR - Promedio_min_PR) / (Promedio_MmR / 1000);
                         vel_prom_med_RF = (Promedio_max_PR - Promedio_min_PR) / (Promedio_mMR / 1000);
 
-                        //Debug.Log("Desea comenzar con las repeticiones de tobillo");
-                        bool decisionRepeticionesTobillo;
-                        
+                        /*
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
-                            //Thread.Sleep(2000);
-                            decisionRepeticionesTobillo = EditorUtility.DisplayDialog("Mensaje de Sistema", "Desea comenzar con las repeticiones de tobillo", "Si", "No");  
+
                         });
+                        */
 
-
-                        //Revisar
-                        if (decisionRepeticionesTobillo = true)
-                        {
-                            //Enviar repeticiones de tobillo
-                            //string mensaje = "T," + NRT + "; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
-                            string mensaje = "T," + NRMedicion + "; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
-
-                            EnviarRasp(mensaje);
-
-                        }
-                        else if (decisionRepeticionesTobillo = false)
-                        {
-                            //Cancelar repeticiones de tobillo
-                            string mensaje = "X,0; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
-                            EnviarRasp(mensaje);
-                        }
                     }
                 }
                 else if (messagges[1] == "Reduccion")
@@ -558,7 +739,6 @@ public class Sockets : MonoBehaviour
                         //Update Numero Repeticiones
                         //Revisar
                         //ActualizarRepeticiones();
-
 
                         contador_reducciones++;
 
@@ -603,6 +783,7 @@ public class Sockets : MonoBehaviour
                                 NuevoDesplazamientoConv = NuevaPosicionMaxima - NuevaPosicionMinima;
 
                                 string mensaje = "X,0;" + VelocidadRodillaF + "," + VelocidadRodillaE + "," + Convert.ToString(NuevoDesplazamientoConv) + "," + Convert.ToString(NuevoDesplazamientoConv) + ",0," + NRR + ",0;0,0,0,0,0,0,0";
+                                Debug.Log(mensaje);
                                 EnviarRasp(mensaje);
                             }
 
@@ -612,6 +793,7 @@ public class Sockets : MonoBehaviour
                                 int angulo_min_tobillo_enviar = Convert.ToInt32(angulo_min_tobillo - 10);
                                 int angulo_max_tobillo_enviar = Convert.ToInt32(angulo_max_tobillo - 10);
                                 string mensaje = "X,0;0,0,0,0,0,0,0;" + VelocidadAngularPF + "," + VelocidadAngularDF + "," + angulo_min_tobillo_enviar + "," + angulo_max_tobillo_enviar + ",0," + NRT + ",0,";
+                                Debug.Log(mensaje);
                                 EnviarRasp(mensaje);
                             }
 
@@ -626,7 +808,15 @@ public class Sockets : MonoBehaviour
                     {
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
-                            EditorUtility.DisplayDialog("Error", e.Message, "OK");
+
+                            mensajes.ActivarCanvas();
+                            mensajes.SetMensaje("Ocurrió un error inesperado");
+                            Debug.Log("Ocurrió un error inesperado" + e.StackTrace);
+                            Time.timeScale = 0f;
+                            mensajes.OcultarBotonCancelar();
+                            mensajes.funcionBotonConfirmarError();
+
+
                         });
                     }
 
@@ -639,7 +829,7 @@ public class Sockets : MonoBehaviour
                     {
                         StartCoroutine("CapturaAlgoRepeticion");
                     });
-                    
+
                     contadorRepTobilloRealizadas = Convert.ToInt32(messagges[2]);
                     contadorRepTobilloRealizadasdis++;
 
@@ -648,56 +838,76 @@ public class Sockets : MonoBehaviour
                         EnProcesoTobillo = false;
                         //actualizar datos de tobillo
                         //ActualizarRepeticiones();
-                        //Debug.Log("La sesión ha finalizado");
+
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
-                            EditorUtility.DisplayDialog("Mensaje del Sistema", "La sesión ha finalizado", "OK");
+                            mensajes.ActivarCanvas();
+                            mensajes.SetMensaje("La sesión ha finalizado");
+                            Time.timeScale = 0f;
+                            mensajes.OcultarBotonCancelar();
+
                         });
 
 
                         //S1.btn_finalizarsesión.Enabled = true;
-                        //Debug.Log("Retire la pierna del paciente");
+
+                        /*ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                        {
+                            mensajes.ActivarCanvas();
+                            mensajes.SetMensaje("Retire la pierna del paciente");
+                            Time.timeScale = 0f;
+                            mensajes.OcultarBotonCancelar();
+
+                        });
+                        */
+
+                        // Revisar
+
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
-                            EditorUtility.DisplayDialog("Mensaje del Sistema", "Retire la pierna del paciente", "OK");
+                            bool bandera_pierna = true;
+                            do
+                            {
+                                bool decisionRetirarPierna;
+                                mensajes.ActivarCanvas();
+                                mensajes.ActivarBotonCancelar();
+                                mensajes.SetMensaje("¿Ha retirado la pierna del dispositivo?");
+                                Time.timeScale = 0f;
+                                decisionRetirarPierna = mensajes.GetConfirmacion();
+                                //Debug.Log("Decision retirar Pierna Tobillo: " + decisionRetirarPierna);
+
+                                if (decisionRetirarPierna == true)
+                                {
+
+                                    string mensaje = "X,0;0,0,0,0,0,0,1;0,0,0,0,0,0,1,";
+                                    Debug.Log(mensaje);
+                                    EnviarRasp(mensaje);
+                                    bandera_pierna = false;
+                                }
+                                else if (decisionRetirarPierna == false)
+                                {
+                                    ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                                        {
+                                            mensajes.ActivarCanvas();
+                                            mensajes.SetMensaje("Retire la pierna del dispositivo");
+                                            Time.timeScale = 0f;
+                                            mensajes.OcultarBotonCancelar();
+
+                                        });
+
+                                }
+                                //Debug.Log(bandera_pierna);
+                            }
+                            while (bandera_pierna == true);
                         });
 
-                        bool bandera_pierna = true;
-                        do
-                        {
-                            // Revisar
-                            //Debug.Log("Ha retirado la pierna del paciente?");
-                            bool decisionRetirarPierna;
-                            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-                            {
-                                decisionRetirarPierna = EditorUtility.DisplayDialog("Mensaje del Sistema", "Ha retirado la pierna del paciente?", "Si", "No");
-                            });
-
-                            if (decisionRetirarPierna = true)
-                            {
-
-                                string mensaje = "X,0;0,0,0,0,0,0,1;0,0,0,0,0,0,1,";
-                                EnviarRasp(mensaje);
-                                bandera_pierna = false;
-                            }
-                            else if (decisionRetirarPierna = false)
-                            {
-                                //Debug.Log("Retire la pierna del paciente");
-                                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-                                {
-                                    EditorUtility.DisplayDialog("Mensaje del Sistema", "Retire la pierna del paciente", "OK");
-                                });
-
-                            }
-                        }
-                        while (bandera_pierna == true);
 
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
                             StartCoroutine("DesplegarResultado");
                         });
                     }
-                    
+
                 }
                 else if (messagges[1] == "RepeticionesRodilla")
                 {
@@ -715,75 +925,100 @@ public class Sockets : MonoBehaviour
                         //actualizar datos de rodilla
                         //ActualizarRepeticiones();
 
-                    } 
+                    }
 
                 }
 
                 else if (messagges[1] == "En posicion Rodilla")
                 {
-                    bool bandera = false;
-                    //Debug.Log("Coloque y asegure la pierna del paciente");
+
+
                     ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                     {
-                        EditorUtility.DisplayDialog("Mensaje del Sistema", "Coloque y asegure la pierna del paciente", "OK");
+                        mensajes.ActivarCanvas();
+                        mensajes.SetMensaje("Coloque y asegure la pierna en el dispositivo");
+                        Time.timeScale = 0f;
+                        mensajes.OcultarBotonCancelar();
+
                     });
 
-                    do
+
+
+                    ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                     {
-                        //Debug.Log("Ha colocado la pierna del paciente?");
-                        bool decisionColocarPiernaPaciente;
-                        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                        bool bandera = false;
+                        do
                         {
-                            decisionColocarPiernaPaciente = EditorUtility.DisplayDialog("Mensaje del Sistema", "Ha colocado la pierna del paciente?", "Si", "No");
-                        });
+                            bool decisionColocarPiernaPaciente;
+                            mensajes.ActivarCanvas();
+                            mensajes.ActivarBotonCancelar();
+                            mensajes.SetMensaje("¿Ha colocado la pierna en el dispositivo?");
+                            Time.timeScale = 0f;
+                            decisionColocarPiernaPaciente = mensajes.GetConfirmacion();
 
-                        if (decisionColocarPiernaPaciente = true)
-                        {
-                            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-                            {
-                                resumenPesca.SetActive(false);
-                            }); 
-                            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-                            {
-                                canvasResultado.SetActive(false);
-                            }); 
-                            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-                            {
-                                fondo.SetActive(true);   
-                            });
-                            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-                            {
-                                canvasPausaPersonaje.SetActive(true);   
-                            });
-                            
-                            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-                            {
-                                hiloAnimaciones.animacionCorrutinaAbajo();
-                                ceboAnimacion.iniciarAnimacionCorrutinaAbajo();
-                            });
+                            //Debug.Log("DecisionColocarPiernaRodilla: " + decisionColocarPiernaPaciente);
 
-                            string mensaje = "X,0;" + VelocidadRodillaF + "," + VelocidadRodillaE + "," + Convert.ToString(NuevoDesplazamientoConv) + "," + Convert.ToString(NuevoDesplazamientoConv) + ",0," + NRR + ",0;0,0,0,0,0,0,0,";
-                            EnviarRasp(mensaje);
-                            bandera = true;
-                        }
-                        else if (decisionColocarPiernaPaciente = false)
-                        {
-                            //Debug.Log("Coloque y asegure la pierna del paciente");
-                            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                            if (decisionColocarPiernaPaciente == true)
                             {
-                                EditorUtility.DisplayDialog("Aviso del Sistema", "Coloque y asegure la pierna del paciente", "OK");
-                            });
+                                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                                    {
+                                        resumenPesca.SetActive(false);
+                                    });
+                                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                                    {
+                                        canvasResultado.SetActive(false);
+                                    });
+                                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                                    {
+                                        fondo.SetActive(true);
+                                    });
+                                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                                    {
+                                        personaje.SetActive(true);
+                                    });
 
-                        }
-                    } while (bandera == false);
+                                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                                    {
+                                        textoPantallaPrincipal.SetActive(true);
+                                    });
+                                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                                    {
+                                        botonPausa.SetActive(true);
+                                    });
+
+
+                                string mensaje = "X,0;" + VelocidadRodillaF + "," + VelocidadRodillaE + "," + Convert.ToString(NuevoDesplazamientoConv) + "," + Convert.ToString(NuevoDesplazamientoConv) + ",0," + NRR + ",0;0,0,0,0,0,0,0,";
+                                Debug.Log(mensaje);
+                                EnviarRasp(mensaje);
+                                bandera = true;
+                            }
+                            else if (decisionColocarPiernaPaciente == false)
+                            {
+                                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                                    {
+                                        mensajes.ActivarCanvas();
+                                        mensajes.SetMensaje("Coloque y asegure la pierna en el dispositivo");
+                                        Time.timeScale = 0f;
+                                        mensajes.OcultarBotonCancelar();
+                                    });
+
+                            }
+
+
+                        } while (bandera == false);
+                    });
+
                 }
                 else if (messagges[1] == "En posicion Tobillo")
                 {
-                    //Debug.Log("Comenzar con repeticiones de tobillo?");
                     bool decisionComenzarRepeticionesTobillo;
                     ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                     {
-                        decisionComenzarRepeticionesTobillo = EditorUtility.DisplayDialog("Mensaje del Sistema", "Comenzar con repeticiones de tobillo?", "Si", "No");
+                        mensajes.ActivarCanvas();
+                        mensajes.SetMensaje("¿Comenzar con repeticiones de tobillo?");
+                        Time.timeScale = 0f;
+                        decisionComenzarRepeticionesTobillo = mensajes.GetConfirmacion();
+
                     });
 
                     if (decisionComenzarRepeticionesTobillo = true)
@@ -793,6 +1028,7 @@ public class Sockets : MonoBehaviour
                         int angulo_min_tobillo_enviar = Convert.ToInt32(angulo_min_tobillo - 10);
                         int angulo_max_tobillo_enviar = Convert.ToInt32(angulo_max_tobillo - 10);
                         string mensaje = "X,0;0,0,0,0,0,0,0;" + VelocidadAngularPF + "," + VelocidadAngularDF + "," + angulo_min_tobillo_enviar + "," + angulo_max_tobillo_enviar + ",0," + NRT + ",0,";
+                        Debug.Log(mensaje);
                         EnviarRasp(mensaje);
 
                     }
@@ -808,19 +1044,59 @@ public class Sockets : MonoBehaviour
                     /*
                     ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                     {
-                        EditorUtility.DisplayDialog("Mensaje del Sistema", ("Received Text: " + messagges[1]), "OK");
+                        mensajes.ActivarCanvas();
+                        mensajes.SetMensaje("Received Text: " + messagges[1]);
+                        Time.timeScale = 0f;
+                        mensajes.OcultarBotonCancelar();
                     });
                     */
+                    Thread.Sleep(10000);
                     IniciarMedicion();
 
                 }
             }
+            catch (IndexOutOfRangeException e)
+            {
+
+                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                    {
+                        if (contadorDatosExtras > 0)
+                        {
+                            //Debug.Log("Contador Vale 1 o mas");
+                            if (messagges[1] == "Tobillo" || messagges[1] == "Rodilla")
+                            {
+                                //Debug.Log("Recibi tobillo o rodilla");
+                                mensajes.OcultarCanvas();
+                                contadorDatosExtras = 0;
+                            }
+                        }
+                        else
+                        {
+                            mensajes.ActivarCanvas();
+                            mensajes.SetMensaje("Estas haciendo repetciones extras");
+                            contadorDatosExtras++;
+                            Time.timeScale = 0f;
+                            StartCoroutine("esperar");
+                            mensajes.OcultarBotonCancelar();
+                            if (mensajes.GetConfirmacion())
+                            {
+                                //Debug.Log("Le di al boton confirmar");
+                                contadorDatosExtras = 0;
+                                //mensajes.OcultarCanvas();
+                            }
+                        }
+                    });
+            }
             catch (Exception e)
             {
-                //Debug.Log(e.Message);
                 ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                 {
-                    EditorUtility.DisplayDialog("Error", e.Message, "OK");
+                    mensajes.ActivarCanvas();
+                    mensajes.SetMensaje("Sucedio un error inesperado");
+                    Debug.Log("2: Se perdió la conexión con el dispositivo" + e.StackTrace);
+                    Time.timeScale = 0f;
+                    mensajes.OcultarBotonCancelar();
+                    mensajes.funcionBotonConfirmarError();
                 });
             }
         }
@@ -828,25 +1104,36 @@ public class Sockets : MonoBehaviour
         {
             current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
         }
-        catch (Exception)
+        catch (Exception error)
         {
-            //Debug.Log("El dispositivo esta desconectado");
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
             {
-                EditorUtility.DisplayDialog("Error", "El dispositivo esta desconectado", "OK");
+                mensajes.ActivarCanvas();
+                mensajes.SetMensaje("3: Se perdió la conexión con el dispositivo");
+                Debug.Log("3: Se perdió la conexión con el dispositivo" + error.StackTrace);
+                Time.timeScale = 0f;
+                mensajes.OcultarBotonCancelar();
+                mensajes.funcionBotonConfirmarError();
             });
 
         }
-        //}
     }
 
     private void EnviarRasp(string mensaje)
     {
         foreach (Socket client_Socket in clientSockets)
         {
+            // Tipos de Codificados Pruebas UTF8 - ASCII
             int byteCount = Encoding.ASCII.GetByteCount(mensaje); //Measures bytes required to send ASCII data
             byte[] sendData = new byte[byteCount]; //Prepares variable size for required data
-            sendData = Encoding.ASCII.GetBytes(mensaje); //Sets the sendData variable to the actual binary dat
+            //Debug.Log(mensaje);
+            //Debug.Log("Tamaño Arreglo: " + sendData.Length);
+            sendData = Encoding.ASCII.GetBytes(mensaje); //Sets the sendData variable to the actual binary data
+            /*for (int i = 0; i != mensaje.Length;i++)
+            {
+                Debug.Log("Dato Numero " + i + ": " + sendData[i]);
+            }*/
+
             client_Socket.Send(sendData);
         }
     }
@@ -860,44 +1147,61 @@ public class Sockets : MonoBehaviour
 
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                 {
-                    EditorUtility.DisplayDialog("Mensaje del Sistema", "Se van a Comenzar las Mediciones Posicione la pierna del paciente", "OK");
+                    mensajes.ActivarCanvas();
+                    mensajes.SetMensaje("Comenzaran las mediciones posicione la pierna en el lugar indicado");
+                    Time.timeScale = 0f;
+                    mensajes.OcultarBotonCancelar();
                 });
-            
-            bool bandera_piernaImitadorInicial = true;
-            do
+
+
+
+            // Revisar
+
+
+            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
             {
-                // Revisar
-                //Debug.Log("Ha retirado la pierna del paciente?");
-                bool decisionPosicionarPierna;
-                ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                bool bandera_piernaImitadorInicial = true;
+                do
                 {
-                    decisionPosicionarPierna = EditorUtility.DisplayDialog("Mensaje del Sistema", "Ya Posiciono la pierna del paciente?", "Si", "No");
-                });
-                
-                if (decisionPosicionarPierna = true)
-                {
-                    
-                    //string mensaje1 = "X,0;0,0,0,0,0,0,1;0,0,0,0,0,0,1,";
-                    //EnviarRasp(mensaje1);
+                    bool decisionPosicionarPierna;
+                    mensajes.ActivarCanvas();
+                    mensajes.ActivarBotonCancelar();
+                    mensajes.SetMensaje("¿Ya posiciono su pierna en el lugar indicado?");
+                    Time.timeScale = 0f;
+                    decisionPosicionarPierna = mensajes.GetConfirmacion();
+                    //Debug.Log("Primera DecisionPosicionarPierna: " + decisionPosicionarPierna);
 
-                    bandera_piernaImitadorInicial = false;
-                }
-                else if (decisionPosicionarPierna = false)
-                {
-                    //Debug.Log("Retire la pierna del paciente");
-                    ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                    if (decisionPosicionarPierna == true)
                     {
-                        EditorUtility.DisplayDialog("Mensaje del Sistema", "Retire la pierna del paciente", "OK");
-                    });
+                        //string mensaje1 = "X,0;0,0,0,0,0,0,1;0,0,0,0,0,0,1,";
+                        //EnviarRasp(mensaje1);
 
+                        bandera_piernaImitadorInicial = false;
+                    }
+                    else if (decisionPosicionarPierna == false)
+                    {
+
+                        ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+                            {
+                                mensajes.ActivarCanvas();
+                                mensajes.SetMensaje("Retire la pierna del paciente");
+                                Time.timeScale = 0f;
+                                mensajes.OcultarBotonCancelar();
+                            });
+
+                    }
+                    //Debug.Log(bandera_piernaImitadorInicial);
                 }
-            }
-            while (bandera_piernaImitadorInicial == true);
-            
+                while (bandera_piernaImitadorInicial == true);
+            });
+
+            //Debug.Log(bandera_piernaImitadorInicial);
+
+
             //NRT = Convert.ToInt32(2);
             //NRR = Convert.ToInt32(2);
-            NRT = 2;    // Numero de Repeticiones Tobillo
-            NRR = 2;    // Numero Repeticiones Rodilla
+            //NRT = 5;    // Numero de Repeticiones Tobillo
+            //NRR = 5;    // Numero Repeticiones Rodilla
 
             PosicionR = new int[NRMedicion, 2]; //min y max
             TiemposR = new double[NRMedicion, 2]; //max->min y de min->max
@@ -917,17 +1221,18 @@ public class Sockets : MonoBehaviour
 
             //string mensaje = "R," + NRR+"; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
             string mensaje = "R," + NRMedicion + "; 0,0,0,0,0,0,0;0,0,0,0,0,0,0,";
-            
+
             //Ejecucion del las mediciones y la primera parte del Juego
 
             //Inicia las animaciones abajo
-            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
-            {
-                hiloAnimaciones.animacionCorrutinaAbajo();
-                ceboAnimacion.iniciarAnimacionCorrutinaAbajo();
-            });
-            
-
+            /*                  
+           ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+           {   
+               hiloAnimaciones.animacionCorrutinaAbajo();
+               ceboAnimacion.iniciarAnimacionCorrutinaAbajo();
+           });
+           */
+            Debug.Log(mensaje);
             EnviarRasp(mensaje);
 
         }
@@ -935,17 +1240,22 @@ public class Sockets : MonoBehaviour
         {
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
             {
-                EditorUtility.DisplayDialog("Error", error.Message, "OK");
+                mensajes.ActivarCanvas();
+                mensajes.SetMensaje("4: Se perdió la conexión con el dispositivo");
+                Debug.Log("4: Se perdió la conexión con el dispositivo" + error.StackTrace);
+                Time.timeScale = 0f;
+                mensajes.OcultarBotonCancelar();
+                mensajes.funcionBotonConfirmarError();
             });
 
         }
     }
     private void Iniciarterapia()
     {
-            /*-------------------Pantalla De Espera--------------------*/
+        /*-------------------Pantalla De Espera--------------------*/
         try
         {
-            
+
             //Asignar porcentajes de disminision a variables
 
             //Porc_Dis_Vel_T = Convert.ToInt32(Num_Dis_Vel_T.Value);    //Porcentaje Disminucion Velocidad Tobillo
@@ -956,17 +1266,17 @@ public class Sockets : MonoBehaviour
             //Programar sesion en DB
 
             //GenerarRegistroPrograma();
-            /*
+
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
             {
-                EditorUtility.DisplayDialog("Mensaje de Sistema", "Se ha programado la sesión", "OK");
+                mensajes.ActivarCanvas();
+                mensajes.SetMensaje("Se ha programado la sesión");
+                Time.timeScale = 0f;
+                mensajes.OcultarBotonCancelar();
             });
-            */
-
 
             //Resultados Generales en DB
             //GenerarRegistroResultados();
-
 
             //Calculo de valores  de velocidad y posicion reducidos
             //MCR=Convert.ToInt32(num_medCR.Value);
@@ -976,13 +1286,19 @@ public class Sockets : MonoBehaviour
             //Crear registro en Resultados Detallados en DB (primer reduccion)
 
             //CrearResultadosDetalles(0);
-            //Debug.Log("El dispositivo imitador se colocara en la posicion inicial para el paciente, por favor espere");
+
             bool result = true;
+            Thread.Sleep(2000);
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
             {
-                result = EditorUtility.DisplayDialog("Mensaje de Sistema", "El dispositivo imitador se colocara en la posicion inicial para el paciente, por favor espere", "OK", "Cancel");
+                mensajes.ActivarCanvas();
+                mensajes.ActivarBotonCancelar();
+                mensajes.SetMensaje("Colocando el dispositivo imitador, por favor espere");
+                Time.timeScale = 0f;
+                result = mensajes.GetConfirmacion();
+
             });
-            
+
             /*ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
             {
                 resumenPesca.SetActive(false);
@@ -993,7 +1309,15 @@ public class Sockets : MonoBehaviour
             }); 
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
             {
-                canvasPausaPersonaje.SetActive(true);   
+                personaje.SetActive(true);
+            });
+            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+            {
+                textoPantallaPrincipal.SetActive(true);
+            });
+            ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
+            {
+                botonPausa.SetActive(true);
             });
             
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
@@ -1014,6 +1338,7 @@ public class Sockets : MonoBehaviour
                 NuevaPosicionMinima = Convert.ToInt32(NuevaPosicionMinima - (8.5 * 845));
 
                 string mensaje = "X,0;" + VelocidadRodillaF + "," + VelocidadRodillaE + ",0," + Convert.ToString(NuevaPosicionMinima) + ",0,1,0;0,0,0,0,0,0,0,";
+                Debug.Log(mensaje);
                 EnviarRasp(mensaje);
 
             }
@@ -1027,7 +1352,12 @@ public class Sockets : MonoBehaviour
         {
             ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
             {
-                EditorUtility.DisplayDialog("Error", error.Message, "OK");
+                mensajes.ActivarCanvas();
+                mensajes.SetMensaje("5: Se perdió la conexión con el dispositivo");
+                Debug.Log("5: Se perdió la conexión con el dispositivo" + error.StackTrace);
+                Time.timeScale = 0f;
+                mensajes.OcultarBotonCancelar();
+                mensajes.funcionBotonConfirmarError();
             });
 
         }

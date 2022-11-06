@@ -11,6 +11,13 @@ public class MenuPausa : MonoBehaviour
     [SerializeField] private GameObject avatar;
     [SerializeField] private GameObject cania;
     [SerializeField] private GameObject cuadroRelleno;
+
+    public void Start(){
+        menuPausa.SetActive(false);
+        avatar.SetActive(true);
+        cania.SetActive(true);
+        cuadroRelleno.SetActive(true);
+    }
     
     //Metodo para poner pausa al juego y mostrar el menu de pausa
     public void Pausa()

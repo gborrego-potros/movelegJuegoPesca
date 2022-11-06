@@ -9,13 +9,13 @@ public class AnimacionPeces : MonoBehaviour
     public GameObject pez2;
 
     //Variables para la velocidad y el tiempo de duracion de la animacion
-    float velocidad = 0.5f;
-    int tiempoEspera = 0;
+    int velocidad = 10;
+    int tiempoEspera = 40;
 
     //Metodo que comienza la animacion de movimiento del hilo
-    public void animacionIniciar(int tiempo)
+    public void animacionIniciar(int speed)
     {
-        tiempoEspera = tiempo;
+        velocidad = speed;
         StartCoroutine("animacionPez");
     }
     

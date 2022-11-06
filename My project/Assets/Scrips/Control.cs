@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class Control : MonoBehaviour
 {
+    public GameObject canvasMenu;
+
+    public GameObject canvasIS;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,9 +25,10 @@ public class Control : MonoBehaviour
         Application.Quit();
     }
 
-    public void Pausar() 
+    public void OcultarCanvas() 
     { 
-        
+        canvasIS.SetActive(false);
+        canvasMenu.SetActive(true);
     }
 
     public void CargarEscena(string nombreNivel)
