@@ -4,65 +4,94 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
-
+using Newtonsoft.Json.Linq;
+using UnityEngine.SceneManagement;
 public class ControladorInicioSesion : MonoBehaviour
 {
-    [SerializeField] private GameObject usuario;
-    [SerializeField] private GameObject contrasenia;
+    [SerializeField] private InputField usuario;
+    [SerializeField] private InputField contrasenia;
     [SerializeField] private Text mensaje;
     [SerializeField] private Button continuar;
+    [SerializeField] private GameObject canvasInicioSesion;
 
-    
+    private string nombreUsuario;
+    private string contrasena;
 
-    public String nombreUsuario;
-    public String contrasena;
-
-    [ContextMenu("Test Get")]
-    public async void InciarSesion()
+    [ContextMenu("Test Login")]
+    public async void IniciarSesion()
     {
-        var url = "http://localhost:3000/api/pacientes/1";
+        nombreUsuario = usuario.text;
+        contrasena = contrasenia.text;
 
-        using var www = UnityWebRequest.Get(url);
+        Debug.Log($"Usuario ingresado: {nombreUsuario}");
+        Debug.Log($"Contraseña ingresada: {contrasena}");
 
+        var url = "http://localhost:3000/api/login";
+
+        var datosLogin = new DatosLogin
+        {
+            correo = nombreUsuario,
+            contrasenia = contrasena
+        };
+
+        string jsonData = JsonConvert.SerializeObject(datosLogin);
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
+
+        using var www = new UnityWebRequest(url, "POST");
+        www.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        www.downloadHandler = new DownloadHandlerBuffer();
         www.SetRequestHeader("Content-Type", "application/json");
 
         var operacion = www.SendWebRequest();
-
         while (!operacion.isDone)
             await Task.Yield();
 
-        var jsonResponse = www.downloadHandler.text;
-
         if (www.result != UnityWebRequest.Result.Success)
-            Debug.Log($"Failed:{www.error}");
+        {
+            Debug.LogError($"Error de conexión: {www.error}");
+            mensaje.text = "No se pudo conectar al servidor.";
+            return;
+        }
+
+        var jsonResponse = www.downloadHandler.text;
+        Debug.Log("JSON recibido: " + jsonResponse);
+        Debug.Log("¿Está vacío?: " + string.IsNullOrEmpty(jsonResponse));
+
+// "{\"mensaje\":\"Login exitoso\",\"correo\":\"admin@example.com\"}" ---- ESTO DE EJEMPLO,
+// Entonces jsonResponse tendrá este valor como string. HACER ALGO SABIO CON ESTO
+
 
         try
         {
-            var result = JsonConvert.DeserializeObject<Usuario>(jsonResponse);
-            
-            nombreUsuario = result.nombre;
-            contrasena = result.contrasenia;
+            Debug.Log("Si entra al try");
+            //var json = JObject.Parse(jsonResponse);
+            //string mensajeServidor = json["mensaje"]?.ToString();
+            //string correoServidor = json["correo"]?.ToString();
 
-            mensaje.text = nombreUsuario;
+            //jsonResponse == "{\"mensaje\":\"Login exitoso\"}"
+            if (jsonResponse.Contains("Login exitoso"))//El juego solo necesita saber si fue exitoso el login
+            {
 
-            Debug.Log(contrasena);
-            /*
-            continuar.onClick.AddListener(clickButton){
-                
+                //se oculta canvas
+                canvasInicioSesion.SetActive(false);
+                //se inabilita boton continuar
+                continuar.interactable = false;
+
+                Debug.Log("Login exitoso: canvas oculto y se muestra nuevo");
+
+                //se carga escena que contiene el canvas de configurar terapia
+                SceneManager.LoadScene("Juego1");
             }
-            */
-            //Debug.Log($"Success: {www.downloadHandler.text}");
+            else
+            {
+                mensaje.text = "Error desconocido.";
+                continuar.interactable = true;
+                Debug.Log("Login fallido: ");
+            }
         }
         catch (Exception ex)
         {
-            Debug.LogError($" {this} Could not parse response {jsonResponse}. {ex.Message}");
+            Debug.LogError("Error parseando JSON: " + ex.Message);
         }
-    }
-
-    public void clickButton(){
-        /*if(result.nombre.ToString()){
-                    
-        }
-        */
     }
 }
