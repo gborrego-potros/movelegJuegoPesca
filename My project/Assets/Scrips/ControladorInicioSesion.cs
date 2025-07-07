@@ -14,6 +14,11 @@ public class ControladorInicioSesion : MonoBehaviour
     [SerializeField] private Button continuar;
     [SerializeField] private GameObject canvasInicioSesion;
 
+    //LLENAR INPUTS TEXT DE LA CONFIGURACION DE LA TERAPIA
+    [SerializeField] private InputField numRepeticiones;
+    [SerializeField] private InputField numRepeticionesRodilla;
+    [SerializeField] private InputField numRepeticionesTobillo;
+
     private string nombreUsuario;
     private string contrasena;
 
@@ -57,13 +62,14 @@ public class ControladorInicioSesion : MonoBehaviour
         Debug.Log("JSON recibido: " + jsonResponse);
         Debug.Log("¿Está vacío?: " + string.IsNullOrEmpty(jsonResponse));
 
-// "{\"mensaje\":\"Login exitoso\",\"correo\":\"admin@example.com\"}" ---- ESTO DE EJEMPLO,
-// Entonces jsonResponse tendrá este valor como string. HACER ALGO SABIO CON ESTO
+        // "{\"mensaje\":\"Login exitoso\",\"correo\":\"admin@example.com\"}" ---- ESTO DE EJEMPLO,
+        // Entonces jsonResponse tendrá este valor como string. HACER ALGO SABIO CON ESTO
 
 
         try
         {
             Debug.Log("Si entra al try");
+            //USAR INDIVIDUAL ATRIBUTOS DEL JSON*****************************
             //var json = JObject.Parse(jsonResponse);
             //string mensajeServidor = json["mensaje"]?.ToString();
             //string correoServidor = json["correo"]?.ToString();
@@ -78,10 +84,13 @@ public class ControladorInicioSesion : MonoBehaviour
                 continuar.interactable = false;
 
                 Debug.Log("Login exitoso: canvas oculto y se muestra nuevo");
-
+                DatosGlobales.nombreUsuario = usuario.text;
                 //se carga escena que contiene el canvas de configurar terapia
                 SceneManager.LoadScene("Juego1");
-            }
+                //llenar las opciones de la terapia
+                //string respuestaJson = await SolicitarTerapiaSesion();
+    
+     }
             else
             {
                 mensaje.text = "Error desconocido.";
@@ -94,4 +103,39 @@ public class ControladorInicioSesion : MonoBehaviour
             Debug.LogError("Error parseando JSON: " + ex.Message);
         }
     }
+   public async Task<string> SolicitarTerapiaSesion()
+{
+    var url = "http://localhost:3000/api/configuracionsesiones";
+    string nombre = DatosGlobales.nombreUsuario;
+    //usuario = nombre;
+
+    var datosSolTerapia = new DatosSolTerapia
+    {
+        correo = nombre
+    };
+
+    string jsonData = JsonConvert.SerializeObject(datosSolTerapia);
+    byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
+
+    using var www = new UnityWebRequest(url, "POST");
+    www.uploadHandler = new UploadHandlerRaw(bodyRaw);
+    www.downloadHandler = new DownloadHandlerBuffer();
+    www.SetRequestHeader("Content-Type", "application/json");
+
+    var operacion = www.SendWebRequest();
+    while (!operacion.isDone)
+        await Task.Yield();
+
+    if (www.result != UnityWebRequest.Result.Success)
+    {
+        Debug.LogError($"Error de conexión: {www.error}");
+        return null;
+    }
+
+    string jsonResponse = www.downloadHandler.text;
+    Debug.Log("Respuesta JSON: " + jsonResponse);
+
+    return jsonResponse;
+}
+
 }

@@ -172,7 +172,7 @@ public class Sockets : MonoBehaviour
 
     // Numero repeticion Tobillo y Rodilla
     public int NRT = 0, NRR = 0;
-    int cont_R = 0, cont_T = 0;
+    int cont_R = 0, cont_T = 0;//SEGUIRLE LA PISTA A ESTO PARA EL MS GUARDAR EN LA DB
 
     int[,] PosicionR; //min y max
     double[,] TiemposR; //max->min y de min->max
@@ -332,16 +332,18 @@ public class Sockets : MonoBehaviour
         angulo_min_tobillo = Promedio_min_PT + ajusteAngular;
     }
 
-    public void AsignarNumeroRepeticiones()
-    {        
-        NRMedicion = int.Parse(inputNumRepeticiones.text);
-        RepeticionesEsperadasRodilla = NRMedicion;
-        repeticionesEsperadasTobillo = NRMedicion;
-        NRT = int.Parse(inputNumRepTobillo.text);
-        NRR = int.Parse(inputNumRepRodilla.text);
+    public void AsignarNumeroRepeticiones()//**********************************************************
+    {       
+        //LLAMAR METODOS DEL ControladorDatosTerapia---EN UN TRY CATCH************************************ 
+        NRMedicion = int.Parse(inputNumRepeticiones.text);//NUMERO TOTALES DE REPETICIONES
+        RepeticionesEsperadasRodilla = NRMedicion;//REPETICIONES ESPERADAS RODILLA
+        repeticionesEsperadasTobillo = NRMedicion;//REPETICIONES ESPERADAS TOBILLO
+        NRT = int.Parse(inputNumRepTobillo.text);//REPETICIONES TOBILLO
+        NRR = int.Parse(inputNumRepRodilla.text);//REPETICIONES RODILLA
 
         canvasCargarTerapia.SetActive(false);
     }
+    //METODO PARA TRAER LOS DATOS DE LA CONFIGURACION
 
     private void ConversionVelocidadesRodilla()
     {
@@ -372,7 +374,7 @@ public class Sockets : MonoBehaviour
     }
 
     /************************Funciones para comunicacion WiFi***********************************/
-
+                 /*HACER LAS ADECUACIONES NECESARIAS PARA LA COMUNICACIÓN BLUETOOH*/
     private void SetupServer()
     {
         try
