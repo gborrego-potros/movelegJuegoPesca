@@ -97,7 +97,7 @@ if (jsonTerapia.Trim().StartsWith("{"))
                         int repRodilla = int.TryParse(nrr, out int r) ? r : 0;
                         int repTobillo = int.TryParse(nrt, out int t) ? t : 0;
 
-                        int total = repRodilla + repTobillo;
+                        int total = 4;
                         numRepeticiones.text = total.ToString();
 
                         Debug.Log("Total repeticiones: " + total.ToString());

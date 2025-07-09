@@ -6,12 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using UnityEngine.Networking;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 using UnityEngine.UI;
 using System.Threading;
+using UnityEngine.SceneManagement;
 
 
 public class Sockets : MonoBehaviour
@@ -158,7 +162,7 @@ public class Sockets : MonoBehaviour
     private static readonly byte[] buffer = new byte[BUFFER_SIZE];
 
     // Puerto que usa el socket
-    private int port = 5000;
+    private int port = 5002;
 
     // Variables de uso para la terapia
 
@@ -333,7 +337,7 @@ public class Sockets : MonoBehaviour
     }
 
     public void AsignarNumeroRepeticiones()//**********************************************************
-    {       
+    {
         //LLAMAR METODOS DEL ControladorDatosTerapia---EN UN TRY CATCH************************************ 
         NRMedicion = int.Parse(inputNumRepeticiones.text);//NUMERO TOTALES DE REPETICIONES
         RepeticionesEsperadasRodilla = NRMedicion;//REPETICIONES ESPERADAS RODILLA
@@ -374,7 +378,7 @@ public class Sockets : MonoBehaviour
     }
 
     /************************Funciones para comunicacion WiFi***********************************/
-                 /*HACER LAS ADECUACIONES NECESARIAS PARA LA COMUNICACIÓN BLUETOOH*/
+    /*HACER LAS ADECUACIONES NECESARIAS PARA LA COMUNICACIÓN BLUETOOH*/
     private void SetupServer()
     {
         try
@@ -847,6 +851,7 @@ public class Sockets : MonoBehaviour
                             mensajes.SetMensaje("La sesión ha finalizado");
                             Time.timeScale = 0f;
                             mensajes.OcultarBotonCancelar();
+                            Debug.Log("La sesion a finalizado - 850");
 
                         });
 
@@ -906,8 +911,10 @@ public class Sockets : MonoBehaviour
 
                         ExecuteOnMainThread.RunOnMainThread.Enqueue(() =>
                         {
+                            Debug.Log("La sesion a finalizado - 910");
                             StartCoroutine("DesplegarResultado");
                         });
+                        Debug.Log("La sesion a finalizado - 913");
                     }
 
                 }
@@ -1273,6 +1280,22 @@ public class Sockets : MonoBehaviour
             {
                 mensajes.ActivarCanvas();
                 mensajes.SetMensaje("Se ha programado la sesión");
+                Debug.Log("La sesion a finalizado - 1279");
+                //Se finaliza la terapia y se envia json de parametros de finalizacion a la db
+                var datos = new DatosSesion
+                {
+                    promedioVelocidadRodilla = 7,
+                    promedioVelocidadTobillo = 7,
+                    posicionRodillaMin = 7,
+                    posicionRodillaMax = 7,
+                    anguloTobilloMin = 7,
+                    anguloTobilloMax = 7,
+                    numRepeticionesTobillo = 7,
+                    numRepeticionesRodilla=7
+                };
+
+                _ = EnviarJson(datos);
+
                 Time.timeScale = 0f;
                 mensajes.OcultarBotonCancelar();
             });
@@ -1364,5 +1387,35 @@ public class Sockets : MonoBehaviour
 
         }
         //conexion.Close();
+    }
+    //METODO PARA ENVIAR JSON Y FINALIZAR TERAPIA
+    // Este método recibe un objeto y lo envía como JSON
+    public async Task EnviarJson(object jsonParam)
+    {
+        string url = "http://localhost:3000/api/sesiones";
+
+        // Convertir el objeto recibido a cadena JSON
+        string jsonData = JsonConvert.SerializeObject(jsonParam);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+
+        // Configurar la petición POST
+        using var request = new UnityWebRequest(url, "POST");
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        var operacion = request.SendWebRequest();
+        while (!operacion.isDone)
+            await Task.Yield();
+
+        // Manejar respuesta del servidor
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("Error al enviar JSON: " + request.error);
+        }
+        else
+        {
+            Debug.Log("Respuesta del servidor: " + request.downloadHandler.text);
+        }
     }
 }
