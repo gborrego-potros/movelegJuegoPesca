@@ -26,6 +26,8 @@ public class ControladorDatosTerapia : MonoBehaviour
         var url = "http://localhost:3000/api/configuracionsesiones/SolicitarTerapia";
         string nombre = DatosGlobales.nombreUsuario;
         usuario = nombre;
+       
+        Debug.Log("TOKEN JWT: " + DatosGlobales.tokenJWT);
 
         //Cuerpo de la peticion
         var datosSolTerapia = new DatosSolTerapia
@@ -39,6 +41,7 @@ public class ControladorDatosTerapia : MonoBehaviour
         www.uploadHandler = new UploadHandlerRaw(bodyRaw);
         www.downloadHandler = new DownloadHandlerBuffer();
         www.SetRequestHeader("Content-Type", "application/json");
+        www.SetRequestHeader("Authorization", $"Bearer {DatosGlobales.tokenJWT}");
 
         var operacion = www.SendWebRequest();
         while (!operacion.isDone)
@@ -88,7 +91,7 @@ if (jsonTerapia.Trim().StartsWith("{"))
 
                         string nrr = respuestaJson["numRepRodilla"]?.ToString();
                         string nrt = respuestaJson["numRepTobillo"]?.ToString();
-
+                        //string tokenValido = respuestaJson
 
                         if (!string.IsNullOrEmpty(nrr)) numRepeticionesRodilla.text = nrr;
                         if (!string.IsNullOrEmpty(nrt)) numRepeticionesTobillo.text = nrt;
@@ -150,7 +153,9 @@ else
     www.uploadHandler = new UploadHandlerRaw(bodyRaw);
     www.downloadHandler = new DownloadHandlerBuffer();
     www.SetRequestHeader("Content-Type", "application/json");
+    www.SetRequestHeader("Authorization", $"Bearer {DatosGlobales.tokenJWT}");
 
+    Debug.Log("TOKEN JWT: " + DatosGlobales.tokenJWT);
     var operacion = www.SendWebRequest();
     while (!operacion.isDone)
         await Task.Yield();

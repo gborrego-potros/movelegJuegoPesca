@@ -70,14 +70,16 @@ public class ControladorInicioSesion : MonoBehaviour
         {
             Debug.Log("Si entra al try");
             //USAR INDIVIDUAL ATRIBUTOS DEL JSON*****************************
-            //var json = JObject.Parse(jsonResponse);
-            //string mensajeServidor = json["mensaje"]?.ToString();
-            //string correoServidor = json["correo"]?.ToString();
+            var json = JObject.Parse(jsonResponse);
+            string mensajeServidor = json["mensaje"]?.ToString();
+            string token = json["token"]?.ToString();
 
             //jsonResponse == "{\"mensaje\":\"Login exitoso\"}"
-            if (jsonResponse.Contains("Login exitoso"))//El juego solo necesita saber si fue exitoso el login
+            if (mensajeServidor == "Login exitoso" && !string.IsNullOrEmpty(token))//El juego solo necesita saber si fue exitoso el login
             {
-
+                Debug.Log("Token recibido: " + token);
+                DatosGlobales.tokenJWT = token;//Se guarda el token globalmente
+                Debug.Log("Token guardado en datos globales: " + DatosGlobales.tokenJWT);
                 //se oculta canvas
                 canvasInicioSesion.SetActive(false);
                 //se inabilita boton continuar
@@ -89,8 +91,8 @@ public class ControladorInicioSesion : MonoBehaviour
                 SceneManager.LoadScene("Juego1");
                 //llenar las opciones de la terapia
                 //string respuestaJson = await SolicitarTerapiaSesion();
-    
-     }
+
+            }
             else
             {
                 mensaje.text = "Error desconocido.";
@@ -103,39 +105,5 @@ public class ControladorInicioSesion : MonoBehaviour
             Debug.LogError("Error parseando JSON: " + ex.Message);
         }
     }
-   public async Task<string> SolicitarTerapiaSesion()
-{
-    var url = "http://localhost:3000/api/configuracionsesiones";
-    string nombre = DatosGlobales.nombreUsuario;
-    //usuario = nombre;
-
-    var datosSolTerapia = new DatosSolTerapia
-    {
-        correo = nombre
-    };
-
-    string jsonData = JsonConvert.SerializeObject(datosSolTerapia);
-    byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
-
-    using var www = new UnityWebRequest(url, "POST");
-    www.uploadHandler = new UploadHandlerRaw(bodyRaw);
-    www.downloadHandler = new DownloadHandlerBuffer();
-    www.SetRequestHeader("Content-Type", "application/json");
-
-    var operacion = www.SendWebRequest();
-    while (!operacion.isDone)
-        await Task.Yield();
-
-    if (www.result != UnityWebRequest.Result.Success)
-    {
-        Debug.LogError($"Error de conexión: {www.error}");
-        return null;
-    }
-
-    string jsonResponse = www.downloadHandler.text;
-    Debug.Log("Respuesta JSON: " + jsonResponse);
-
-    return jsonResponse;
-}
 
 }
